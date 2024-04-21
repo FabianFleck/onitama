@@ -1,7 +1,6 @@
 package br.com.onitama.resource;
 
-import br.com.onitama.model.PartType;
-import br.com.onitama.model.PlayerColor;
+import br.com.onitama.model.enumeration.ColorEnum;
 import br.com.onitama.model.Position;
 import br.com.onitama.service.CardService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +21,7 @@ public class MovementController {
     }
 
     @GetMapping("/moves")
-    public ResponseEntity<List<Position>> getPossibleMoves(@RequestParam int line, @RequestParam int column, @RequestParam PlayerColor playerColor) {
-        return ResponseEntity.ok(cardService.getPossibleMoves(line, column, playerColor));
+    public ResponseEntity<List<Position>> getPossibleMoves(@RequestParam int line, @RequestParam int column, @RequestParam ColorEnum colorEnum) {
+        return ResponseEntity.ok(cardService.getPossibleMoves(line, column, colorEnum));
     }
 }

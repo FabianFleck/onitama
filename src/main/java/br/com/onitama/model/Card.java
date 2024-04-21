@@ -1,10 +1,13 @@
 package br.com.onitama.model;
 
+import br.com.onitama.model.enumeration.ColorEnum;
+
 import java.util.List;
 
 public class Card {
     private String name;
     private List<Position> positions;
+    private ColorEnum colorEnum;
 
     public Card(String name, List<Position> positions) {
         this.name = name;
@@ -25,5 +28,13 @@ public class Card {
 
     public void setPositions(List<Position> positions) {
         this.positions = positions;
+    }
+
+    public ColorEnum getColorEnum() {
+        return colorEnum;
+    }
+
+    public void setColorEnum(ColorEnum colorEnum) {
+        this.colorEnum = colorEnum;
     }
 }

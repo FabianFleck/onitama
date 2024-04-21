@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS cards (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255),
+  color_enum VARCHAR(10)
+);
+
+CREATE TABLE IF NOT EXISTS positions (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  line INT,
+  column INT,
+  card_id BIGINT,
+  FOREIGN KEY (card_id) REFERENCES cards(id)
+);

@@ -1,7 +1,7 @@
 package br.com.onitama.service;
 
 import br.com.onitama.model.Card;
-import br.com.onitama.model.PlayerColor;
+import br.com.onitama.model.enumeration.ColorEnum;
 import br.com.onitama.model.Position;
 import org.springframework.stereotype.Service;
 
@@ -10,8 +10,8 @@ import java.util.List;
 
 @Service
 public class CardService {
-    public List<Position> getPossibleMoves(int line, int column, PlayerColor playerColor) {
-        return calculatePossibleMoves(new Position(line, column), getCardByName(), playerColor);
+    public List<Position> getPossibleMoves(int line, int column, ColorEnum colorEnum) {
+        return calculatePossibleMoves(new Position(line, column), getCardByName(), colorEnum);
     }
 
     private Card getCardByName() {
@@ -23,9 +23,9 @@ public class CardService {
         return new Card("Elephant", elephantMoves);
     }
 
-    public List<Position> calculatePossibleMoves(Position currentPosition, Card card, PlayerColor playerColor) {
+    public List<Position> calculatePossibleMoves(Position currentPosition, Card card, ColorEnum colorEnum) {
         List<Position> possibleMoves = new ArrayList<>();
-        int lineDirection = playerColor == PlayerColor.RED ? 1 : -1;
+        int lineDirection = colorEnum == ColorEnum.RED ? 1 : -1;
 
         for (Position move : card.getPositions()) {
             int newLine = currentPosition.getLine() + (move.getLine() * lineDirection);

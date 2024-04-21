@@ -1,12 +1,14 @@
 package br.com.onitama.model;
 
+import br.com.onitama.model.enumeration.PartTypeEnum;
+
 public class Part {
     private Position position;
-    private PartType partType;
+    private PartTypeEnum partTypeEnum;
 
-    public Part(Position position, PartType partType) {
+    public Part(Position position, PartTypeEnum partTypeEnum) {
         this.position = position;
-        this.partType = partType;
+        this.partTypeEnum = partTypeEnum;
     }
 
     public Position getPosition() {
@@ -17,11 +19,11 @@ public class Part {
         this.position = position;
     }
 
-    public PartType getPartType() {
-        return partType;
+    public PartTypeEnum getPartType() {
+        return partTypeEnum;
     }
 
-    public void setPartType(PartType partType) {
-        this.partType = partType;
+    public void setPartType(PartTypeEnum partTypeEnum) {
+        this.partTypeEnum = partTypeEnum;
     }
 }
