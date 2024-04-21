@@ -1,8 +1,17 @@
 package br.com.onitama.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Objeto de posição")
 public class Position {
+    @Schema(description = "Linha da posição", example = "5")
     private int line;
+
+    @Schema(description = "Coluna da posição", example = "3")
     private int column;
+
+    public Position() {
+    }
 
     public Position(int line, int column) {
         this.line = line;

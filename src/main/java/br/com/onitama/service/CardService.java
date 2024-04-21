@@ -10,8 +10,8 @@ import java.util.List;
 
 @Service
 public class CardService {
-    public List<Position> getPossibleMoves(int line, int column) {
-        return calculatePossibleMoves(new Position(line, column), getCardByName(), PlayerColor.RED);
+    public List<Position> getPossibleMoves(int line, int column, PlayerColor playerColor) {
+        return calculatePossibleMoves(new Position(line, column), getCardByName(), playerColor);
     }
 
     private Card getCardByName() {
