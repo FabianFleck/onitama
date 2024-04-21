@@ -1,7 +1,6 @@
 package br.com.onitama.model;
 
 public class Battle {
-
     private String id;
     private Player player1;
     private Player player2;

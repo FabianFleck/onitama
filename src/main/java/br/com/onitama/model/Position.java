@@ -2,9 +2,9 @@ package br.com.onitama.model;
 
 public class Position {
     private int line;
-    private char column;
+    private int column;
 
-    public Position(int line, char column) {
+    public Position(int line, int column) {
         this.line = line;
         this.column = column;
     }
@@ -17,11 +17,11 @@ public class Position {
         this.line = line;
     }
 
-    public char getColumn() {
+    public int getColumn() {
         return this.column;
     }
 
-    public void setColumn(char column) {
+    public void setColumn(int column) {
         this.column = column;
     }
 }

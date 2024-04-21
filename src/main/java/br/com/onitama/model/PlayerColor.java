@@ -1,5 +1,8 @@
 package br.com.onitama.model;
 
 public enum PlayerColor {
-    RED, BLUE
+    //Joga de baixo pra cima
+    RED,
+    //Joga de cima pra baixo
+    BLUE
 }
