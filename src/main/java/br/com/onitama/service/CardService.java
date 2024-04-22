@@ -1,8 +1,10 @@
 package br.com.onitama.service;
 
 import br.com.onitama.model.Card;
+import br.com.onitama.model.entity.CardEntity;
 import br.com.onitama.model.enumeration.ColorEnum;
 import br.com.onitama.model.Position;
+import br.com.onitama.repository.CardRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,6 +12,17 @@ import java.util.List;
 
 @Service
 public class CardService {
+
+    private final CardRepository repository;
+
+    public CardService(CardRepository repository) {
+        this.repository = repository;
+    }
+
+    public List<CardEntity> getAllCards() {
+        return repository.findAll();
+    }
+
     public List<Position> getPossibleMoves(int line, int column, ColorEnum colorEnum) {
         return calculatePossibleMoves(new Position(line, column), getCardByName(), colorEnum);
     }
