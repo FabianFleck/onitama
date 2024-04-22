@@ -2,6 +2,7 @@ package br.com.onitama.service;
 
 import br.com.onitama.model.Card;
 import br.com.onitama.model.entity.CardEntity;
+import br.com.onitama.model.entity.PositionEntity;
 import br.com.onitama.model.enumeration.ColorEnum;
 import br.com.onitama.model.Position;
 import br.com.onitama.repository.CardRepository;
@@ -23,24 +24,19 @@ public class CardService {
         return repository.findAll();
     }
 
-    public List<Position> getPossibleMoves(int line, int column, ColorEnum colorEnum) {
-        return calculatePossibleMoves(new Position(line, column), getCardByName(), colorEnum);
+    public List<Position> getPossibleMoves(int line, int column, ColorEnum colorEnum, Long cardId) {
+        return calculatePossibleMoves(new Position(line, column), findById(cardId), colorEnum);
     }
 
-    private Card getCardByName() {
-        List<Position> elephantMoves = new ArrayList<>();
-        elephantMoves.add(new Position(-1, 1));  // Avança uma linha e uma coluna para a direita
-        elephantMoves.add(new Position(-1, -1)); // Avança uma linha e uma coluna para a esquerda
-        elephantMoves.add(new Position(0, 1));  // Move uma coluna para a direita na mesma linha
-        elephantMoves.add(new Position(0, -1)); // Move uma coluna para a esquerda na mesma linha
-        return new Card("Elephant", elephantMoves);
+    public CardEntity findById(Long cardId) {
+        return this.repository.findById(cardId).orElse(null);
     }
 
-    public List<Position> calculatePossibleMoves(Position currentPosition, Card card, ColorEnum colorEnum) {
+    public List<Position> calculatePossibleMoves(Position currentPosition, CardEntity card, ColorEnum colorEnum) {
         List<Position> possibleMoves = new ArrayList<>();
         int lineDirection = colorEnum == ColorEnum.RED ? 1 : -1;
 
-        for (Position move : card.getPositions()) {
+        for (PositionEntity move : card.getPositions()) {
             int newLine = currentPosition.getLine() + (move.getLine() * lineDirection);
             int newColumn = currentPosition.getColumn() + move.getColumn();
 

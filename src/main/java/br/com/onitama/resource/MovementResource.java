@@ -12,16 +12,16 @@ import java.util.List;
 @RestController
 @Tag(name = "Movement")
 @RequestMapping("/api/movement")
-public class MovementController {
+public class MovementResource {
 
     private final CardService cardService;
 
-    public MovementController(CardService cardService) {
+    public MovementResource(CardService cardService) {
         this.cardService = cardService;
     }
 
-    @GetMapping("/moves")
-    public ResponseEntity<List<Position>> getPossibleMoves(@RequestParam int line, @RequestParam int column, @RequestParam ColorEnum colorEnum) {
-        return ResponseEntity.ok(cardService.getPossibleMoves(line, column, colorEnum));
+    @GetMapping("/possible")
+    public ResponseEntity<List<Position>> getPossibleMoves(@RequestParam int line, @RequestParam int column, @RequestParam ColorEnum colorEnum, @RequestParam Long cardId) {
+        return ResponseEntity.ok(cardService.getPossibleMoves(line, column, colorEnum, cardId));
     }
 }
