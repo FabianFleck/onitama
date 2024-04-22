@@ -21,6 +21,14 @@ public class PlayerEntity {
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PartEntity> parts;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "card1_id")
+    private CardEntity card1;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "card2_id")
+    private CardEntity card2;
+
     public Long getId() {
         return id;
     }
@@ -51,5 +59,21 @@ public class PlayerEntity {
 
     public void setParts(List<PartEntity> parts) {
         this.parts = parts;
+    }
+
+    public CardEntity getCard1() {
+        return card1;
+    }
+
+    public void setCard1(CardEntity card1) {
+        this.card1 = card1;
+    }
+
+    public CardEntity getCard2() {
+        return card2;
+    }
+
+    public void setCard2(CardEntity card2) {
+        this.card2 = card2;
     }
 }

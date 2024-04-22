@@ -2,7 +2,6 @@ package br.com.onitama.service;
 
 import br.com.onitama.model.entity.BattleEntity;
 import br.com.onitama.model.entity.PlayerEntity;
-import br.com.onitama.model.enumeration.ColorEnum;
 import br.com.onitama.repository.BattleRepository;
 import org.springframework.stereotype.Service;
 
@@ -47,5 +46,9 @@ public class BattleService {
 
     public BattleEntity findById(String battleId) {
         return repository.findById(battleId).orElseThrow(() -> new RuntimeException("Battle not found"));
+    }
+
+    public BattleEntity save(BattleEntity battle) {
+        return repository.save(battle);
     }
 }

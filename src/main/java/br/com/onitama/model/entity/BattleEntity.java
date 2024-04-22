@@ -18,6 +18,10 @@ public class BattleEntity {
     @JoinColumn(name = "player2_id", referencedColumnName = "id")
     private PlayerEntity player2;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "table_card_id")
+    private CardEntity tableCard;
+
     public String getId() {
         return id;
     }
@@ -40,5 +44,13 @@ public class BattleEntity {
 
     public void setPlayer2(PlayerEntity player2) {
         this.player2 = player2;
+    }
+
+    public CardEntity getTableCard() {
+        return tableCard;
+    }
+
+    public void setTableCard(CardEntity tableCard) {
+        this.tableCard = tableCard;
     }
 }

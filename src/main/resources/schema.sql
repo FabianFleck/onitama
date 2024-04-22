@@ -14,16 +14,22 @@ CREATE TABLE IF NOT EXISTS positions (
 
 CREATE TABLE IF NOT EXISTS player (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255),
-    color ENUM('RED', 'BLUE') NOT NULL
+    name VARCHAR(255) NOT NULL,
+    color ENUM('RED', 'BLUE') NOT NULL,
+    card1_id BIGINT,
+    card2_id BIGINT,
+    FOREIGN KEY (card1_id) REFERENCES cards(id),
+    FOREIGN KEY (card2_id) REFERENCES cards(id)
 );
 
 CREATE TABLE IF NOT EXISTS battle (
     id VARCHAR(255) PRIMARY KEY,
     player1_id BIGINT,
     player2_id BIGINT,
+    table_card_id BIGINT,
     FOREIGN KEY (player1_id) REFERENCES player(id),
-    FOREIGN KEY (player2_id) REFERENCES player(id)
+    FOREIGN KEY (player2_id) REFERENCES player(id),
+    FOREIGN KEY (table_card_id) REFERENCES cards(id)
 );
 
 CREATE TABLE IF NOT EXISTS part (
