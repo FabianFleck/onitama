@@ -1,5 +1,7 @@
 package br.com.onitama.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -18,6 +20,7 @@ public class PositionEntity {
 
     @ManyToOne
     @JoinColumn(name = "card_id")
+    @JsonIgnore
     private CardEntity card;
 
     public Long getId() {

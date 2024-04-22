@@ -16,7 +16,7 @@ public class CardEntity {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PositionEntity> positions;
 
     @Enumerated(EnumType.STRING)
