@@ -1,5 +1,7 @@
 package br.com.onitama.resource;
 
+import br.com.onitama.model.entity.PositionEntity;
+import br.com.onitama.model.entity.PositionPart;
 import br.com.onitama.model.enumeration.ColorEnum;
 import br.com.onitama.model.Position;
 import br.com.onitama.service.CardService;
@@ -21,6 +23,16 @@ public class MovementResource {
     public MovementResource(CardService cardService, MovementService service) {
         this.cardService = cardService;
         this.service = service;
+    }
+
+    @PostMapping
+    public ResponseEntity<PositionPart> move(@RequestParam int line,
+                                             @RequestParam int column,
+                                             @RequestParam int lineNew,
+                                             @RequestParam int columnNew,
+                                             @RequestParam Long playerId,
+                                             @RequestParam Long cardId) {
+        return ResponseEntity.ok(service.move(line, column, lineNew, columnNew, playerId, cardId));
     }
 
     @GetMapping("/possible")

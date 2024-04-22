@@ -2,6 +2,8 @@ package br.com.onitama.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.Objects;
+
 @Schema(description = "Objeto de posição")
 public class Position {
     @Schema(description = "Linha da posição", example = "5")
@@ -32,5 +34,18 @@ public class Position {
 
     public void setColumn(int column) {
         this.column = column;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Position position = (Position) o;
+        return line == position.line && column == position.column;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(line, column);
     }
 }

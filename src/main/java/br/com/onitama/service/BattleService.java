@@ -3,6 +3,7 @@ package br.com.onitama.service;
 import br.com.onitama.model.entity.BattleEntity;
 import br.com.onitama.model.entity.PlayerEntity;
 import br.com.onitama.repository.BattleRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import static br.com.onitama.model.enumeration.ColorEnum.BLUE;
@@ -14,7 +15,7 @@ public class BattleService {
     private final PlayerService playerService;
     private final BattleRepository repository;
 
-    public BattleService(PlayerService playerService, BattleRepository repository) {
+    public BattleService(@Lazy PlayerService playerService, BattleRepository repository) {
         this.playerService = playerService;
         this.repository = repository;
     }
@@ -50,5 +51,9 @@ public class BattleService {
 
     public BattleEntity save(BattleEntity battle) {
         return repository.save(battle);
+    }
+
+    public BattleEntity findByPlayer(PlayerEntity player) {
+        return repository.findByPlayer1OrPlayer2(player, player);
     }
 }

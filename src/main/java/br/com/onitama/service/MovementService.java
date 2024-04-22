@@ -5,6 +5,7 @@ import br.com.onitama.model.entity.*;
 import br.com.onitama.model.enumeration.ColorEnum;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +14,12 @@ public class MovementService {
 
     private final CardService cardService;
     private final PlayerService playerService;
+    private final PartService partService;
 
-    public MovementService(CardService cardService, PlayerService playerService) {
+    public MovementService(CardService cardService, PlayerService playerService, PartService partService) {
         this.cardService = cardService;
         this.playerService = playerService;
+        this.partService = partService;
     }
 
     public List<Position> getPossibleMoves(int line, int column, Long playerId, Long cardId) {
@@ -54,5 +57,37 @@ public class MovementService {
             }
         }
         return false;
+    }
+
+    @Transactional
+    public PositionPart move(int line, int column, int lineNew, int columnNew, Long playerId, Long cardId) {
+        CardEntity usedCard = cardService.findById(cardId);
+        Position newPosition = new Position(lineNew, columnNew);
+        PositionPart newPositionPart = new PositionPart(lineNew, columnNew);
+        PlayerEntity player = playerService.findById(playerId);
+        Position currentPosition = new Position(line, column);
+        PositionPart currentPositionPart = new PositionPart(line, column);
+
+        List<Position> possibleMoves = calculatePossibleMoves(currentPosition, usedCard, player);
+        if (!possibleMoves.contains(newPosition)) {
+            return null;  // Movimento não é válido, retorna null
+        }
+
+        PartEntity partToMove = partService.findPartAtPosition(player.getParts(), currentPositionPart);
+        if (partToMove == null) {
+            return null;  // Peça não encontrada na posição atual, retorna null
+        }
+
+        // Atualizar a posição da peça
+        partToMove.setPosition(newPositionPart);
+        PartEntity part = partService.save(partToMove);
+
+        // Verificar e capturar peça do adversário
+        partService.captureOpponentPartAtPosition(player, part.getPosition());
+
+        // Trocar as cartas entre jogador e mesa
+        cardService.swapCardsWithTable(player, usedCard);
+
+        return partToMove.getPosition();  // Retorna a nova posição da peça
     }
 }
