@@ -30,4 +30,8 @@ public class PlayerService {
         player = repository.save(player); // Salva o player e as parts devido ao CascadeType.ALL
         return player;
     }
+
+    public PlayerEntity findById(Long playerId) {
+        return repository.findById(playerId).orElse(null);
+    }
 }
