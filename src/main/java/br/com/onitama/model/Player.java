@@ -1,10 +1,12 @@
 package br.com.onitama.model;
 
+import br.com.onitama.model.enumeration.ColorEnum;
+
 import java.util.List;
 
 public class Player {
     private String name;
-    private PlayerColor color;
+    private ColorEnum color;
     private List<Part> part;
     private boolean movesDown; // True se avança para cima, false se avança para baixo
 
@@ -23,11 +25,11 @@ public class Player {
         this.name = name;
     }
 
-    public PlayerColor getColor() {
+    public ColorEnum getColor() {
         return color;
     }
 
-    public void setColor(PlayerColor color) {
+    public void setColor(ColorEnum color) {
         this.color = color;
     }
 
