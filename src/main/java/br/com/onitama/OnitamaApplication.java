@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class OnitamaApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(OnitamaApplication.class, args);
+        SpringApplication app = new SpringApplication(OnitamaApplication.class);
+        app.setAllowCircularReferences(true);
+        app.run(args);
     }
 }
