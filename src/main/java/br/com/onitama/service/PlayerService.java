@@ -1,5 +1,6 @@
 package br.com.onitama.service;
 
+import br.com.onitama.error.exception.UnprocessableEntityException;
 import br.com.onitama.model.entity.BattleEntity;
 import br.com.onitama.model.entity.PartEntity;
 import br.com.onitama.model.entity.PlayerEntity;
@@ -35,7 +36,8 @@ public class PlayerService {
     }
 
     public PlayerEntity findById(Long playerId) {
-        return repository.findById(playerId).orElse(null);
+        return repository.findById(playerId)
+                .orElseThrow(() -> new UnprocessableEntityException("Player não encontrado"));
     }
 
     public PlayerEntity findOpponent(PlayerEntity player) {

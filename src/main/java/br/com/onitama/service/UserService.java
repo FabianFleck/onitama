@@ -1,5 +1,6 @@
 package br.com.onitama.service;
 
+import br.com.onitama.error.exception.UnprocessableEntityException;
 import br.com.onitama.model.entity.UserEntity;
 import br.com.onitama.model.request.UserRequest;
 import br.com.onitama.repository.UserRepository;
@@ -23,7 +24,7 @@ public class UserService {
 
     public UserEntity registerNewUser(UserRequest user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new RuntimeException("Username already taken!");
+            throw new UnprocessableEntityException("Username já existe!");
         }
         UserEntity newUser = new UserEntity();
         newUser.setName(user.getName());

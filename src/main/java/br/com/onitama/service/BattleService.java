@@ -1,5 +1,6 @@
 package br.com.onitama.service;
 
+import br.com.onitama.error.exception.UnprocessableEntityException;
 import br.com.onitama.model.entity.BattleEntity;
 import br.com.onitama.model.entity.PlayerEntity;
 import br.com.onitama.repository.BattleRepository;
@@ -32,11 +33,10 @@ public class BattleService {
     }
 
     public BattleEntity joinBattle(String battleId, String name) {
-        BattleEntity battle = repository.findById(battleId)
-                .orElseThrow(() -> new RuntimeException("Battle not found"));
+        BattleEntity battle = findById(battleId);
 
         if (battle.getPlayer2() != null) {
-            throw new IllegalStateException("Player2 is already set for this battle.");
+            throw new UnprocessableEntityException("Player2 is already set for this battle.");
         }
 
         PlayerEntity player2 = playerService.createPlayerWithParts(name, BLUE, 1);
@@ -46,7 +46,8 @@ public class BattleService {
     }
 
     public BattleEntity findById(String battleId) {
-        return repository.findById(battleId).orElseThrow(() -> new RuntimeException("Battle not found"));
+        return repository.findById(battleId)
+                .orElseThrow(() -> new UnprocessableEntityException("Battle not found"));
     }
 
     public BattleEntity save(BattleEntity battle) {

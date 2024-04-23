@@ -1,5 +1,6 @@
 package br.com.onitama.service;
 
+import br.com.onitama.error.exception.UnprocessableEntityException;
 import br.com.onitama.model.entity.BattleEntity;
 import br.com.onitama.model.entity.CardEntity;
 import br.com.onitama.model.entity.PlayerEntity;
@@ -27,7 +28,8 @@ public class CardService {
     }
 
     public CardEntity findById(Long cardId) {
-        return this.repository.findById(cardId).orElse(null);
+        return this.repository.findById(cardId)
+                .orElseThrow(() -> new UnprocessableEntityException("Card não encontrado"));
     }
 
     public BattleEntity distributeCards(String battleId) {
