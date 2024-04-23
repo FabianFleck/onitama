@@ -23,7 +23,7 @@ public class UserService {
     }
 
     public UserEntity registerNewUser(UserRequest user) {
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+        if (existsByUsername(user.getUsername())) {
             throw new UnprocessableEntityException("Username já existe!");
         }
         UserEntity newUser = new UserEntity();
@@ -37,7 +37,8 @@ public class UserService {
         return userRepository.findByUsername(username).isPresent();
     }
 
-    public Optional<UserEntity> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public UserEntity findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UnprocessableEntityException("Username não existe."));
     }
 }

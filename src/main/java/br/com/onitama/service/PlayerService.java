@@ -4,6 +4,7 @@ import br.com.onitama.error.exception.UnprocessableEntityException;
 import br.com.onitama.model.entity.BattleEntity;
 import br.com.onitama.model.entity.PartEntity;
 import br.com.onitama.model.entity.PlayerEntity;
+import br.com.onitama.model.entity.UserEntity;
 import br.com.onitama.model.enumeration.ColorEnum;
 import br.com.onitama.repository.PlayerRepository;
 import org.springframework.context.annotation.Lazy;
@@ -17,16 +18,19 @@ public class PlayerService {
     private final PlayerRepository repository;
     private final PartService partService;
     private final BattleService battleService;
+    private final UserService userService;
 
-    public PlayerService(PlayerRepository repository, @Lazy PartService partService, BattleService battleService) {
+    public PlayerService(PlayerRepository repository, @Lazy PartService partService, BattleService battleService, UserService userService) {
         this.repository = repository;
         this.partService = partService;
         this.battleService = battleService;
+        this.userService = userService;
     }
 
-    public PlayerEntity createPlayerWithParts(String name, ColorEnum color, int startLine) {
+    public PlayerEntity createPlayerWithParts(String username, ColorEnum color, int startLine) {
         PlayerEntity player = new PlayerEntity();
-        player.setName(name);
+        UserEntity user = userService.findByUsername(username);
+        player.setUser(user);
         player.setColor(color);
         List<PartEntity> parts = partService.initializePartsForPlayer(player, startLine);
         player.setParts(parts);

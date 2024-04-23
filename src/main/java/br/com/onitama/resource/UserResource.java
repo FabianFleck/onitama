@@ -1,6 +1,5 @@
 package br.com.onitama.resource;
 
-import br.com.onitama.model.entity.UserEntity;
 import br.com.onitama.model.request.UserRequest;
 import br.com.onitama.model.response.TokenResponse;
 import br.com.onitama.service.TokenService;
@@ -33,12 +32,7 @@ public class UserResource {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserRequest request) {
-        if (userService.existsByUsername(request.getName())) {
-            return ResponseEntity.badRequest().body("Error: Username is already taken!");
-        }
-
-        UserEntity userEntity = userService.registerNewUser(request);
-        return ResponseEntity.ok(userEntity);
+        return ResponseEntity.ok(userService.registerNewUser(request));
     }
 
     @PostMapping("/login")

@@ -18,8 +18,8 @@ public class BattleResource {
     }
 
     @PostMapping
-    public ResponseEntity<BattleEntity> createBattle(@RequestParam String name) {
-        return ResponseEntity.ok(service.createBattle(name));
+    public ResponseEntity<BattleEntity> createBattle(@RequestParam String username) {
+        return ResponseEntity.ok(service.createBattle(username));
     }
 
     @GetMapping("/{battleId}")
@@ -28,7 +28,7 @@ public class BattleResource {
     }
 
     @PostMapping("/{battleId}")
-    public ResponseEntity<BattleEntity> joinBattle(@PathVariable("battleId") String battleId, @RequestParam String name) {
-        return ResponseEntity.ok(service.joinBattle(battleId, name));
+    public ResponseEntity<BattleEntity> joinBattle(@PathVariable("battleId") String battleId, @RequestParam String username) {
+        return ResponseEntity.ok(service.joinBattle(battleId, username));
     }
 }

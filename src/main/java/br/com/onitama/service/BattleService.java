@@ -21,8 +21,8 @@ public class BattleService {
         this.repository = repository;
     }
 
-    public BattleEntity createBattle(String name) {
-        PlayerEntity player = playerService.createPlayerWithParts(name, RED, 5);
+    public BattleEntity createBattle(String username) {
+        PlayerEntity player = playerService.createPlayerWithParts(username, RED, 5);
 
         BattleEntity battle = new BattleEntity();
         battle.setPlayer1(player);
@@ -32,14 +32,18 @@ public class BattleService {
         return save;
     }
 
-    public BattleEntity joinBattle(String battleId, String name) {
+    public BattleEntity joinBattle(String battleId, String username) {
         BattleEntity battle = findById(battleId);
 
-        if (battle.getPlayer2() != null) {
-            throw new UnprocessableEntityException("Player2 is already set for this battle.");
+        if (battle.getPlayer1() != null && username.equals(battle.getPlayer1().getUser().getUsername())) {
+            throw new UnprocessableEntityException("Você já está nessa batalha.");
         }
 
-        PlayerEntity player2 = playerService.createPlayerWithParts(name, BLUE, 1);
+        if (battle.getPlayer2() != null) {
+            throw new UnprocessableEntityException("Essa batalha já está preenchida com os dois players.");
+        }
+
+        PlayerEntity player2 = playerService.createPlayerWithParts(username, BLUE, 1);
         battle.setPlayer2(player2);
 
         return repository.save(battle);

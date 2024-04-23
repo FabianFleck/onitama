@@ -21,10 +21,11 @@ CREATE TABLE IF NOT EXISTS positions (
 
 CREATE TABLE IF NOT EXISTS player (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    user_id BIGINT,
     color ENUM('RED', 'BLUE') NOT NULL,
     card1_id BIGINT,
     card2_id BIGINT,
+    FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (card1_id) REFERENCES cards(id),
     FOREIGN KEY (card2_id) REFERENCES cards(id)
 );
