@@ -1,6 +1,7 @@
 package br.com.onitama.config.jwt;
 
 import br.com.onitama.service.TokenService;
+import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,6 +39,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 username = tokenService.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
                 logger.warn("Unable to get JWT Token");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT Token");
+                return;
+            } catch (MalformedJwtException e) {
+                logger.error("Malformed JWT Token", e);
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Malformed JWT Token");
+                return;
             }
         } else {
             logger.warn("JWT Token does not begin with Bearer String");
