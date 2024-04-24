@@ -4,6 +4,7 @@ import br.com.onitama.error.exception.UnprocessableEntityException;
 import br.com.onitama.model.entity.BattleEntity;
 import br.com.onitama.model.entity.PlayerEntity;
 import br.com.onitama.repository.BattleRepository;
+import br.com.onitama.model.response.BattleSimpleResponse;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +53,7 @@ public class BattleService {
         }
 
         PlayerEntity player2 = playerService.createPlayerWithParts(username, BLUE, 1);
-        newBattle.setPlayer1(player2);
+        newBattle.setPlayer2(player2);
 
         BattleEntity battle = repository.save(newBattle);
         player2.setBattle(newBattle);
@@ -74,7 +75,9 @@ public class BattleService {
         return repository.findByPlayer1OrPlayer2(player, player);
     }
 
-    public List<BattleEntity> findAllByUserUsername(String username) {
-        return repository.findByUsername(username);
+    public List<BattleSimpleResponse> findAllByUserUsername(String username) {
+        return playerService.findByUsername(username)
+                .stream().map(player -> new BattleSimpleResponse(player.getBattle().getId()))
+                .toList();
     }
 }

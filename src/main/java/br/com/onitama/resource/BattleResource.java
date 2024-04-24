@@ -1,6 +1,7 @@
 package br.com.onitama.resource;
 
 import br.com.onitama.model.entity.BattleEntity;
+import br.com.onitama.model.response.BattleSimpleResponse;
 import br.com.onitama.service.BattleService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class BattleResource {
     }
 
     @GetMapping("/user/{username}")
-    public ResponseEntity<List<BattleEntity>> findAllByUserUsername(@PathVariable("username") String username) {
+    public ResponseEntity<List<BattleSimpleResponse>> findAllByUserUsername(@PathVariable("username") String username) {
         return ResponseEntity.ok(service.findAllByUserUsername(username));
     }
 }
