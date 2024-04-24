@@ -4,6 +4,7 @@ import br.com.onitama.model.entity.PartEntity;
 import br.com.onitama.model.entity.PlayerEntity;
 import br.com.onitama.model.entity.PositionPart;
 import br.com.onitama.model.enumeration.PartTypeEnum;
+import br.com.onitama.repository.PartRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,6 +14,22 @@ import static br.com.onitama.model.enumeration.PartTypeEnum.DISCIPLE;
 
 @Service
 public class PartService {
+
+    private final PlayerService playerService;
+    private final PartRepository repository;
+
+    public PartService(PlayerService playerService, PartRepository repository) {
+        this.playerService = playerService;
+        this.repository = repository;
+    }
+
+    public void captureOpponentPartAtPosition(PlayerEntity player, PositionPart newPosition) {
+        PlayerEntity opponent = playerService.findOpponent(player);
+        PartEntity opponentPart = findPartAtPosition(opponent.getParts(), newPosition);
+        if (opponentPart != null) {
+            repository.delete(opponentPart);  // Remover peça do adversário do banco
+        }
+    }
 
     public List<PartEntity> initializePartsForPlayer(PlayerEntity player, int startLine) {
         List<PartEntity> parts = new ArrayList<>();
@@ -25,5 +42,18 @@ public class PartService {
         }
         parts.get(2).setPartTypeEnum(PartTypeEnum.MASTER);
         return parts;
+    }
+
+    public PartEntity findPartAtPosition(List<PartEntity> parts, PositionPart targetPosition) {
+        for (PartEntity part : parts) {
+            if (part.getPosition().equals(targetPosition)) {
+                return part;
+            }
+        }
+        return null;  // Retorna null se nenhuma peça for encontrada na posição especificada
+    }
+
+    public PartEntity save(PartEntity part) {
+        return repository.save(part);
     }
 }

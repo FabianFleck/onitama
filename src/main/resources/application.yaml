@@ -19,3 +19,12 @@ spring:
     console:
       enabled: true
       path: /h2-console
+jwt:
+  secret: afg-c26-ioh
+  expiration: 86400000  # Expiração em milissegundos, e.g., 86400000 para 24 horas
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

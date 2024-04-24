@@ -1,6 +1,7 @@
 package br.com.onitama.model.entity;
 
 import br.com.onitama.model.enumeration.ColorEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +14,9 @@ public class PlayerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
     @Enumerated(EnumType.STRING)
     private ColorEnum color;
@@ -29,6 +32,12 @@ public class PlayerEntity {
     @JoinColumn(name = "card2_id")
     private CardEntity card2;
 
+    @ManyToOne
+    @JoinColumn(name = "battle_id")
+    @JsonIgnore
+    private BattleEntity battle;
+
+
     public Long getId() {
         return id;
     }
@@ -37,12 +46,12 @@ public class PlayerEntity {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public UserEntity getUser() {
+        return user;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 
     public ColorEnum getColor() {
@@ -75,5 +84,13 @@ public class PlayerEntity {
 
     public void setCard2(CardEntity card2) {
         this.card2 = card2;
+    }
+
+    public BattleEntity getBattle() {
+        return battle;
+    }
+
+    public void setBattle(BattleEntity battle) {
+        this.battle = battle;
     }
 }

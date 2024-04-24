@@ -6,9 +6,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Tag(name = "Battle")
-@RequestMapping("/api/babttle")
+@RequestMapping("/api/battle")
 public class BattleResource {
 
     private final BattleService service;
@@ -18,8 +20,8 @@ public class BattleResource {
     }
 
     @PostMapping
-    public ResponseEntity<BattleEntity> createBattle(@RequestParam String name) {
-        return ResponseEntity.ok(service.createBattle(name));
+    public ResponseEntity<BattleEntity> createBattle(@RequestParam String username) {
+        return ResponseEntity.ok(service.createBattle(username));
     }
 
     @GetMapping("/{battleId}")
@@ -28,7 +30,12 @@ public class BattleResource {
     }
 
     @PostMapping("/{battleId}")
-    public ResponseEntity<BattleEntity> joinBattle(@PathVariable("battleId") String battleId, @RequestParam String name) {
-        return ResponseEntity.ok(service.joinBattle(battleId, name));
+    public ResponseEntity<BattleEntity> joinBattle(@PathVariable("battleId") String battleId, @RequestParam String username) {
+        return ResponseEntity.ok(service.joinBattle(battleId, username));
+    }
+
+    @GetMapping("/user/{username}")
+    public ResponseEntity<List<BattleEntity>> findAllByUserUsername(@PathVariable("username") String username) {
+        return ResponseEntity.ok(service.findAllByUserUsername(username));
     }
 }

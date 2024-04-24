@@ -1,7 +1,9 @@
 package br.com.onitama.service;
 
+import br.com.onitama.error.exception.UnprocessableEntityException;
 import br.com.onitama.model.entity.BattleEntity;
 import br.com.onitama.model.entity.CardEntity;
+import br.com.onitama.model.entity.PlayerEntity;
 import br.com.onitama.repository.CardRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +15,12 @@ public class CardService {
 
     private final CardRepository repository;
     private final BattleService battleService;
+    private final PlayerService playerService;
 
-    public CardService(CardRepository repository, BattleService battleService) {
+    public CardService(CardRepository repository, BattleService battleService, PlayerService playerService) {
         this.repository = repository;
         this.battleService = battleService;
+        this.playerService = playerService;
     }
 
     public List<CardEntity> getAllCards() {
@@ -24,7 +28,8 @@ public class CardService {
     }
 
     public CardEntity findById(Long cardId) {
-        return this.repository.findById(cardId).orElse(null);
+        return this.repository.findById(cardId)
+                .orElseThrow(() -> new UnprocessableEntityException("Card não encontrado"));
     }
 
     public BattleEntity distributeCards(String battleId) {
@@ -40,5 +45,18 @@ public class CardService {
         battle.setTableCard(allCards.get(4)); // 1 carta na mesa
 
         return battleService.save(battle);
+    }
+
+    public void swapCardsWithTable(PlayerEntity player, CardEntity usedCard) {
+        BattleEntity battle = battleService.findByPlayer(player);
+        CardEntity tableCard = battle.getTableCard();  // Supondo uma única carta na mesa
+        battle.setTableCard(usedCard);  // Colocar a carta usada na mesa
+        if (player.getCard1().equals(usedCard)) {
+            player.setCard1(tableCard);
+        } else if (player.getCard2().equals(usedCard)) {
+            player.setCard2(tableCard);
+        }
+        playerService.save(player);
+        battleService.save(battle);
     }
 }
