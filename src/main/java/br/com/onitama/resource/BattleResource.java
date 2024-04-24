@@ -1,6 +1,7 @@
 package br.com.onitama.resource;
 
 import br.com.onitama.model.entity.BattleEntity;
+import br.com.onitama.model.enumeration.ColorEnum;
 import br.com.onitama.model.response.BattleSimpleResponse;
 import br.com.onitama.service.BattleService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,8 +22,9 @@ public class BattleResource {
     }
 
     @PostMapping
-    public ResponseEntity<BattleEntity> createBattle(@RequestParam String username) {
-        return ResponseEntity.ok(service.createBattle(username));
+    public ResponseEntity<BattleEntity> createBattle(@RequestParam String username,
+                                                     @RequestParam ColorEnum color) {
+        return ResponseEntity.ok(service.createBattle(username, color));
     }
 
     @GetMapping("/{battleId}")
