@@ -99,5 +99,5 @@ INSERT INTO positions (line, column, card_id) VALUES
 
 -- Ox: Avança diretamente para cima; move lateralmente para a direita
 (1, 0, 16),  -- Avança uma casa para cima
-(0, 1, 16),  -- Move uma casa para a direita na mesma linha
+(-1, 0, 16), -- Recua uma casa para baixo
 (0, 1, 16);  -- Move uma casa para a direita na mesma linha

@@ -1,5 +1,6 @@
 package br.com.onitama.service;
 
+import br.com.onitama.error.exception.UnprocessableEntityException;
 import br.com.onitama.model.Position;
 import br.com.onitama.model.entity.*;
 import br.com.onitama.model.enumeration.ColorEnum;
@@ -23,23 +24,25 @@ public class MovementService {
     }
 
     public List<Position> getPossibleMoves(int line, int column, Long playerId, Long cardId) {
-        final Position positionActual = new Position(line, column);
+        final PositionPart positionActual = new PositionPart(line, column);
         PlayerEntity player = playerService.findById(playerId);
-        CardEntity card = cardService.findById(cardId);
+        CardEntity card = cardService.findById(player, cardId);
 
-        return calculatePossibleMoves(positionActual, card, player);
+        return calculatePossibleMoves(positionActual, card, player)
+                .stream().map(positionPart -> new Position(positionPart.getLine(), positionPart.getColumn()))
+                .toList();
     }
 
-    public List<Position> calculatePossibleMoves(Position currentPosition, CardEntity card, PlayerEntity player) {
-        List<Position> possibleMoves = new ArrayList<>();
-        int lineDirection = player.getColor() == ColorEnum.RED ? 1 : -1;
+    public List<PositionPart> calculatePossibleMoves(PositionPart currentPosition, CardEntity card, PlayerEntity player) {
+        List<PositionPart> possibleMoves = new ArrayList<>();
+        int lineDirection = player.getColor() == ColorEnum.BLUE ? 1 : -1;
 
         for (PositionEntity move : card.getPositions()) {
             int newLine = currentPosition.getLine() + (move.getLine() * lineDirection);
             int newColumn = currentPosition.getColumn() + move.getColumn();
 
             if (isValidPosition(newLine, newColumn) && !isPositionOccupied(newLine, newColumn, player.getParts())) {
-                possibleMoves.add(new Position(newLine, newColumn));
+                possibleMoves.add(new PositionPart(newLine, newColumn));
             }
         }
         return possibleMoves;
@@ -61,21 +64,19 @@ public class MovementService {
 
     @Transactional
     public PositionPart move(int line, int column, int lineNew, int columnNew, Long playerId, Long cardId) {
-        CardEntity usedCard = cardService.findById(cardId);
-        Position newPosition = new Position(lineNew, columnNew);
-        PositionPart newPositionPart = new PositionPart(lineNew, columnNew);
         PlayerEntity player = playerService.findById(playerId);
-        Position currentPosition = new Position(line, column);
+        CardEntity usedCard = cardService.findById(player, cardId);
+        PositionPart newPositionPart = new PositionPart(lineNew, columnNew);
         PositionPart currentPositionPart = new PositionPart(line, column);
 
-        List<Position> possibleMoves = calculatePossibleMoves(currentPosition, usedCard, player);
-        if (!possibleMoves.contains(newPosition)) {
-            return null;  // Movimento não é válido, retorna null
+        List<PositionPart> possibleMoves = calculatePossibleMoves(currentPositionPart, usedCard, player);
+        if (!possibleMoves.contains(newPositionPart)) {
+            throw new UnprocessableEntityException("Movimento inválido.");
         }
 
         PartEntity partToMove = partService.findPartAtPosition(player.getParts(), currentPositionPart);
         if (partToMove == null) {
-            return null;  // Peça não encontrada na posição atual, retorna null
+            throw new UnprocessableEntityException("Peça não encontrada na posição atual.");
         }
 
         // Atualizar a posição da peça

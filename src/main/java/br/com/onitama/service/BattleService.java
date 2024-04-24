@@ -95,7 +95,7 @@ public class BattleService {
     }
 
     private int getStartLine(ColorEnum color) {
-        return color == RED ? 5 : 1;
+        return color == RED ? 1 : 5;
     }
 
     private ColorEnum findColorOpponent(BattleEntity battle) {

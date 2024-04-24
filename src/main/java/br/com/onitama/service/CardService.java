@@ -29,7 +29,7 @@ public class CardService {
 
     public CardEntity findById(Long cardId) {
         return this.repository.findById(cardId)
-                .orElseThrow(() -> new UnprocessableEntityException("Card não encontrado"));
+                .orElseThrow(() -> new UnprocessableEntityException("Card não encontrado."));
     }
 
     public BattleEntity distributeCards(String battleId) {
@@ -58,5 +58,14 @@ public class CardService {
         }
         playerService.save(player);
         battleService.save(battle);
+    }
+
+    public CardEntity findById(PlayerEntity player, Long cardId) {
+        if(player.getCard1().getId().equals(cardId)) {
+            return player.getCard1();
+        } else if (player.getCard2().getId().equals(cardId)) {
+            return player.getCard2();
+        }
+        throw new UnprocessableEntityException("Card não encontrado para o player.");
     }
 }
