@@ -14,10 +14,13 @@ public interface BattleRepository extends JpaRepository<BattleEntity, String> {
     BattleEntity findByPlayer1OrPlayer2(PlayerEntity player1, PlayerEntity player2);
 
     // Busca de batalhas por username do usuário
-    @Query("SELECT b FROM BattleEntity b WHERE b.player1.user.username = :username OR b.player2.user.username = :username")
+    @Query("SELECT b FROM BattleEntity b WHERE b.player1.user.username LIKE :username OR b.player2.user.username LIKE :username")
     List<BattleEntity> findByUsername(@Param("username") String username);
 
     // Busca de batalhas por ID do usuário
     @Query("SELECT b FROM BattleEntity b WHERE b.player1.user.id = :userId OR b.player2.user.id = :userId")
     List<BattleEntity> findByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT b FROM BattleEntity b WHERE b.player1.id = :id OR b.player2.id = :id")
+    List<BattleEntity> findByPlayerId(@Param("id") Long id);
 }

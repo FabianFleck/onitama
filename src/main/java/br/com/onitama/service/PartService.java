@@ -6,6 +6,7 @@ import br.com.onitama.model.entity.PositionPart;
 import br.com.onitama.model.enumeration.PartTypeEnum;
 import br.com.onitama.repository.PartRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +24,17 @@ public class PartService {
         this.repository = repository;
     }
 
+    @Transactional
     public void captureOpponentPartAtPosition(PlayerEntity player, PositionPart newPosition) {
+        // Encontrar o oponente
         PlayerEntity opponent = playerService.findOpponent(player);
-        PartEntity opponentPart = findPartAtPosition(opponent.getParts(), newPosition);
+
+        // Encontrar a peça do oponente na posição especificada
+        PartEntity opponentPart = repository.findByPlayerAndPosition(opponent, newPosition);
+
+        // Se a peça existir, deletá-la
         if (opponentPart != null) {
-            repository.delete(opponentPart);  // Remover peça do adversário do banco
+            repository.delete(opponentPart);
         }
     }
 

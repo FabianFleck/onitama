@@ -56,4 +56,9 @@ public class PlayerService {
     public PlayerEntity save(PlayerEntity player) {
         return repository.save(player);
     }
+
+    public List<PlayerEntity> findByUsername(String username) {
+        UserEntity user = userService.findByUsername(username);
+        return repository.findAllByUserId(user.getId());
+    }
 }

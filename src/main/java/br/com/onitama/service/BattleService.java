@@ -3,6 +3,8 @@ package br.com.onitama.service;
 import br.com.onitama.error.exception.UnprocessableEntityException;
 import br.com.onitama.model.entity.BattleEntity;
 import br.com.onitama.model.entity.PlayerEntity;
+import br.com.onitama.model.enumeration.ColorEnum;
+import br.com.onitama.model.response.BattleSimpleResponse;
 import br.com.onitama.repository.BattleRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -25,15 +27,18 @@ public class BattleService {
     }
 
     @Transactional
-    public BattleEntity createBattle(String username) {
+    public BattleEntity createBattle(String username, ColorEnum color) {
         BattleEntity newBattle = new BattleEntity();
-        repository.save(newBattle);
 
-        PlayerEntity player = playerService.createPlayerWithParts(username, RED, 5);
-        newBattle.setPlayer1(player);
+        PlayerEntity player = playerService.createPlayerWithParts(username, color, getStartLine(color));
+        if (color == RED) {
+            newBattle.setPlayer1(player);
+        } else {
+            newBattle.setPlayer2(player);
+        }
 
         BattleEntity battle = repository.save(newBattle);
-        player.setBattle(newBattle);
+        player.setBattle(battle);
         playerService.save(player);
 
         return battle;
@@ -41,24 +46,33 @@ public class BattleService {
 
     @Transactional
     public BattleEntity joinBattle(String battleId, String username) {
-        BattleEntity newBattle = findById(battleId);
+        BattleEntity battle = findById(battleId);
 
-        if (newBattle.getPlayer1() != null && username.equals(newBattle.getPlayer1().getUser().getUsername())) {
+        if ((battle.getPlayer1() != null && username.equals(battle.getPlayer1().getUser().getUsername()))
+                || battle.getPlayer2() != null && username.equals(battle.getPlayer2().getUser().getUsername())) {
             throw new UnprocessableEntityException("Você já está nessa batalha.");
         }
 
-        if (newBattle.getPlayer2() != null) {
+        if (battle.getPlayer1() != null && battle.getPlayer2() != null) {
             throw new UnprocessableEntityException("Essa batalha já está preenchida com os dois players.");
         }
 
-        PlayerEntity player2 = playerService.createPlayerWithParts(username, BLUE, 1);
-        newBattle.setPlayer1(player2);
+        ColorEnum colorOpponent = findColorOpponent(battle);
+        ColorEnum color = colorOpponent == BLUE ? RED : BLUE;
 
-        BattleEntity battle = repository.save(newBattle);
-        player2.setBattle(newBattle);
-        playerService.save(player2);
+        PlayerEntity player = playerService.createPlayerWithParts(username, color, getStartLine(color));
 
-        return battle;
+        if (battle.getPlayer1() == null) {
+            battle.setPlayer1(player);
+        } else {
+            battle.setPlayer2(player);
+        }
+
+        BattleEntity battleSave = repository.save(battle);
+        player.setBattle(battleSave);
+        playerService.save(player);
+
+        return battleSave;
     }
 
     public BattleEntity findById(String battleId) {
@@ -74,7 +88,19 @@ public class BattleService {
         return repository.findByPlayer1OrPlayer2(player, player);
     }
 
-    public List<BattleEntity> findAllByUserUsername(String username) {
-        return repository.findByUsername(username);
+    public List<BattleSimpleResponse> findAllByUserUsername(String username) {
+        return playerService.findByUsername(username)
+                .stream().map(player -> new BattleSimpleResponse(player.getBattle().getId()))
+                .toList();
+    }
+
+    private int getStartLine(ColorEnum color) {
+        return color == RED ? 1 : 5;
+    }
+
+    private ColorEnum findColorOpponent(BattleEntity battle) {
+        return battle.getPlayer1() != null
+                ? battle.getPlayer1().getColor()
+                : battle.getPlayer2().getColor();
     }
 }

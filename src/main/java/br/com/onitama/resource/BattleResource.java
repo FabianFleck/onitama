@@ -1,6 +1,8 @@
 package br.com.onitama.resource;
 
 import br.com.onitama.model.entity.BattleEntity;
+import br.com.onitama.model.enumeration.ColorEnum;
+import br.com.onitama.model.response.BattleSimpleResponse;
 import br.com.onitama.service.BattleService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +22,9 @@ public class BattleResource {
     }
 
     @PostMapping
-    public ResponseEntity<BattleEntity> createBattle(@RequestParam String username) {
-        return ResponseEntity.ok(service.createBattle(username));
+    public ResponseEntity<BattleEntity> createBattle(@RequestParam String username,
+                                                     @RequestParam ColorEnum color) {
+        return ResponseEntity.ok(service.createBattle(username, color));
     }
 
     @GetMapping("/{battleId}")
@@ -35,7 +38,7 @@ public class BattleResource {
     }
 
     @GetMapping("/user/{username}")
-    public ResponseEntity<List<BattleEntity>> findAllByUserUsername(@PathVariable("username") String username) {
+    public ResponseEntity<List<BattleSimpleResponse>> findAllByUserUsername(@PathVariable("username") String username) {
         return ResponseEntity.ok(service.findAllByUserUsername(username));
     }
 }
