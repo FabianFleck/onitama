@@ -1,5 +1,7 @@
 package br.com.onitama.model.entity;
 
+import br.com.onitama.model.enumeration.ColorEnum;
+
 import javax.persistence.*;
 import java.util.UUID;
 
@@ -21,6 +23,10 @@ public class BattleEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "table_card_id")
     private CardEntity tableCard;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "current_player")
+    private ColorEnum currentPlayer;
 
     public String getId() {
         return id;
@@ -52,5 +58,17 @@ public class BattleEntity {
 
     public void setTableCard(CardEntity tableCard) {
         this.tableCard = tableCard;
+    }
+
+    public ColorEnum getCurrentPlayer() {
+        return this.currentPlayer;
+    }
+
+    public void nextPlayer() {
+        this.currentPlayer = currentPlayer == ColorEnum.RED ? ColorEnum.BLUE : ColorEnum.RED;
+    }
+
+    public void initializeTableCard() {
+        this.currentPlayer = this.tableCard.getColorEnum();
     }
 }

@@ -51,13 +51,15 @@ public class CardService {
         battle.getPlayer2().setCard2(allCards.get(3));  // 2 cartas para Player2
         battle.setTableCard(allCards.get(4)); // 1 carta na mesa
 
+        battle.initializeTableCard();
+
         return battleService.save(battle);
     }
 
     public void swapCardsWithTable(PlayerEntity player, CardEntity usedCard) {
         BattleEntity battle = battleService.findByPlayer(player);
-        CardEntity tableCard = battle.getTableCard();  // Supondo uma única carta na mesa
-        battle.setTableCard(usedCard);  // Colocar a carta usada na mesa
+        CardEntity tableCard = battle.getTableCard();
+        battle.setTableCard(usedCard);
         if (player.getCard1().equals(usedCard)) {
             player.setCard1(tableCard);
         } else if (player.getCard2().equals(usedCard)) {

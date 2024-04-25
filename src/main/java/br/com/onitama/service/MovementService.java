@@ -77,7 +77,12 @@ public class MovementService {
 
     @Transactional
     public PositionPart move(int line, int column, int lineNew, int columnNew, Long playerId, Long cardId) {
+        BattleEntity battle = battleService.findByPlayerId(playerId);
         PlayerEntity player = playerService.findById(playerId);
+
+        if (!isPlayerTurn(battle, playerId)) {
+            throw new UnprocessableEntityException("Não é o seu turno.");
+        }
 
         if (!areCardsDrawn(player)) {
             throw new UnprocessableEntityException("As cartas precisam ser sorteadas antes de fazer um movimento.");
@@ -97,16 +102,20 @@ public class MovementService {
             throw new UnprocessableEntityException("Movimento inválido.");
         }
 
-        // Atualizar a posição da peça
         partToMove.setPosition(newPositionPart);
         PartEntity part = partService.save(partToMove);
 
-        // Verificar e capturar peça do adversário
         partService.captureOpponentPartAtPosition(player, part.getPosition());
 
-        // Trocar as cartas entre jogador e mesa
         cardService.swapCardsWithTable(player, usedCard);
 
-        return partToMove.getPosition();  // Retorna a nova posição da peça
+        battleService.nextPlayer(player.getBattle().getId());
+
+        return partToMove.getPosition();
+    }
+
+    private boolean isPlayerTurn(BattleEntity battle, Long playerId) {
+        PlayerEntity currentPlayer = battle.getCurrentPlayer() == ColorEnum.RED ? battle.getPlayer1() : battle.getPlayer2();
+        return currentPlayer != null && currentPlayer.getId().equals(playerId);
     }
 }

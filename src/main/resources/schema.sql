@@ -24,7 +24,8 @@ CREATE TABLE IF NOT EXISTS battle (
     id VARCHAR(255) PRIMARY KEY,
     player1_id BIGINT,
     player2_id BIGINT,
-    table_card_id BIGINT
+    table_card_id BIGINT,
+    current_player ENUM('RED', 'BLUE')
     -- Remova as chaves estrangeiras aqui para evitar erros de referência circular
 );
 
