@@ -16,11 +16,13 @@ public class MovementService {
     private final CardService cardService;
     private final PlayerService playerService;
     private final PartService partService;
+    private final BattleService battleService;
 
-    public MovementService(CardService cardService, PlayerService playerService, PartService partService) {
+    public MovementService(CardService cardService, PlayerService playerService, PartService partService, BattleService battleService) {
         this.cardService = cardService;
         this.playerService = playerService;
         this.partService = partService;
+        this.battleService = battleService;
     }
 
     public List<Position> getPossibleMoves(int line, int column, Long playerId, Long cardId) {
@@ -62,21 +64,37 @@ public class MovementService {
         return false;
     }
 
+    private boolean areCardsDrawn(PlayerEntity player) {
+        BattleEntity battle = battleService.findByPlayer(player);
+        return battle.getTableCard() != null
+                && battle.getPlayer1() != null
+                && battle.getPlayer2() != null
+                && battle.getPlayer1().getCard1() != null
+                && battle.getPlayer1().getCard2() != null
+                && battle.getPlayer2().getCard1() != null
+                && battle.getPlayer2().getCard2() != null;
+    }
+
     @Transactional
     public PositionPart move(int line, int column, int lineNew, int columnNew, Long playerId, Long cardId) {
         PlayerEntity player = playerService.findById(playerId);
+
+        if (!areCardsDrawn(player)) {
+            throw new UnprocessableEntityException("As cartas precisam ser sorteadas antes de fazer um movimento.");
+        }
+
         CardEntity usedCard = cardService.findById(player, cardId);
         PositionPart newPositionPart = new PositionPart(lineNew, columnNew);
         PositionPart currentPositionPart = new PositionPart(line, column);
 
-        List<PositionPart> possibleMoves = calculatePossibleMoves(currentPositionPart, usedCard, player);
-        if (!possibleMoves.contains(newPositionPart)) {
-            throw new UnprocessableEntityException("Movimento inválido.");
-        }
-
         PartEntity partToMove = partService.findPartAtPosition(player.getParts(), currentPositionPart);
         if (partToMove == null) {
             throw new UnprocessableEntityException("Peça não encontrada na posição atual.");
+        }
+
+        List<PositionPart> possibleMoves = calculatePossibleMoves(currentPositionPart, usedCard, player);
+        if (!possibleMoves.contains(newPositionPart)) {
+            throw new UnprocessableEntityException("Movimento inválido.");
         }
 
         // Atualizar a posição da peça

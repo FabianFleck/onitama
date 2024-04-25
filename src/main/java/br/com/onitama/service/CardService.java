@@ -32,11 +32,18 @@ public class CardService {
                 .orElseThrow(() -> new UnprocessableEntityException("Card não encontrado."));
     }
 
+    private void registeredPlayers(BattleEntity battle) {
+        if (battle.getPlayer1() == null || battle.getPlayer2() == null) {
+            throw new UnprocessableEntityException("A batalha não está preenchida com os dois jogadores.");
+        }
+    }
+
     public BattleEntity distributeCards(String battleId) {
+        BattleEntity battle = battleService.findById(battleId);
+        registeredPlayers(battle);
+
         List<CardEntity> allCards = repository.findAll();
         Collections.shuffle(allCards);
-
-        BattleEntity battle = battleService.findById(battleId);
 
         battle.getPlayer1().setCard1(allCards.get(0)); // 2 cartas para Player1
         battle.getPlayer1().setCard2(allCards.get(1)); // 2 cartas para Player1
