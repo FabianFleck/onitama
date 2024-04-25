@@ -103,4 +103,14 @@ public class BattleService {
                 ? battle.getPlayer1().getColor()
                 : battle.getPlayer2().getColor();
     }
+
+    public BattleEntity nextPlayer(String battleId) {
+        BattleEntity battle = findById(battleId);
+        battle.nextPlayer();
+        return save(battle);
+    }
+
+    public BattleEntity findByPlayerId(Long playerId) {
+        return repository.findByPlayerId(playerId);
+    }
 }

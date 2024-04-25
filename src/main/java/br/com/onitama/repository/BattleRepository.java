@@ -22,5 +22,5 @@ public interface BattleRepository extends JpaRepository<BattleEntity, String> {
     List<BattleEntity> findByUserId(@Param("userId") Long userId);
 
     @Query("SELECT b FROM BattleEntity b WHERE b.player1.id = :id OR b.player2.id = :id")
-    List<BattleEntity> findByPlayerId(@Param("id") Long id);
+    BattleEntity findByPlayerId(@Param("id") Long id);
 }
