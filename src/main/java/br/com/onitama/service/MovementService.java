@@ -17,18 +17,21 @@ public class MovementService {
     private final PlayerService playerService;
     private final PartService partService;
     private final BattleService battleService;
+    private final TokenService tokenService;
 
-    public MovementService(CardService cardService, PlayerService playerService, PartService partService, BattleService battleService) {
+    public MovementService(CardService cardService, PlayerService playerService, PartService partService, BattleService battleService, TokenService tokenService) {
         this.cardService = cardService;
         this.playerService = playerService;
         this.partService = partService;
         this.battleService = battleService;
+        this.tokenService = tokenService;
     }
 
-    public List<Position> getPossibleMoves(int line, int column, Long playerId, Long cardId) {
+    public List<Position> getPossibleMoves(String username, PositionPart position, Long playerId, Long cardId) {
         PlayerEntity player = playerService.findById(playerId);
+        tokenService.isAuthorization(player.getUser().getUsername(), username);
 
-        PartEntity partToMove = partService.findPartAtPosition(player.getParts(), new PositionPart(line, column));
+        PartEntity partToMove = partService.findPartAtPosition(player.getParts(), position);
 
         CardEntity card = cardService.findById(player, cardId);
 
@@ -84,9 +87,11 @@ public class MovementService {
     }
 
     @Transactional
-    public PositionPart move(int line, int column, int lineNew, int columnNew, Long playerId, Long cardId) {
-        BattleEntity battle = battleService.findByPlayerId(playerId);
+    public PositionPart move(String username, PositionPart currentPositionPart, PositionPart newPositionPart, Long playerId, Long cardId) {
         PlayerEntity player = playerService.findById(playerId);
+        tokenService.isAuthorization(player.getUser().getUsername(), username);
+
+        BattleEntity battle = battleService.findByPlayerId(playerId);
 
         if (!areCardsDrawn(player)) {
             throw new UnprocessableEntityException("As cartas precisam ser sorteadas antes de fazer um movimento.");
@@ -97,8 +102,6 @@ public class MovementService {
         }
 
         CardEntity usedCard = cardService.findById(player, cardId);
-        PositionPart newPositionPart = new PositionPart(lineNew, columnNew);
-        PositionPart currentPositionPart = new PositionPart(line, column);
 
         PartEntity partToMove = partService.findPartAtPosition(player.getParts(), currentPositionPart);
 

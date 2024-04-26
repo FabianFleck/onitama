@@ -1,5 +1,6 @@
 package br.com.onitama.service;
 
+import br.com.onitama.error.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -59,5 +60,10 @@ public class TokenService {
     public Boolean validateToken(String token, String username) {
         final String tokenUsername = extractUsername(token);
         return (username.equals(tokenUsername) && !isTokenExpired(token));
+    }
+
+    public void isAuthorization(String playerUsername, String tokenUsername) {
+        if (!playerUsername.equals(tokenUsername))
+            throw new UnauthorizedException("Usuário não autorizado.");
     }
 }
