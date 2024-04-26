@@ -1,9 +1,10 @@
 package br.com.onitama.model.request;
 
-public class UserRequest {
+public class UserCreateRequest {
     private String name;
     private String username;
     private String password;
+    private String confirmPassword;
 
     public String getName() {
         return name;
@@ -27,5 +28,13 @@ public class UserRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
 }
