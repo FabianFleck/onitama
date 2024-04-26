@@ -41,6 +41,7 @@ public class CardService {
     public BattleEntity distributeCards(String battleId) {
         BattleEntity battle = battleService.findById(battleId);
         registeredPlayers(battle);
+        distributeCards(battle);
 
         List<CardEntity> allCards = repository.findAll();
         Collections.shuffle(allCards);
@@ -54,6 +55,16 @@ public class CardService {
         battle.initializeTableCard();
 
         return battleService.save(battle);
+    }
+
+    private void distributeCards(BattleEntity battle) {
+        if (battle.getPlayer1().getCard1() != null
+                && battle.getPlayer1().getCard2() != null
+                && battle.getPlayer2().getCard1() != null
+                && battle.getPlayer2().getCard2() != null
+                && battle.getTableCard() != null) {
+            throw new UnprocessableEntityException("As cartas já foram distribuídas para essa batalha.");
+        }
     }
 
     public void swapCardsWithTable(PlayerEntity player, CardEntity usedCard) {
@@ -70,7 +81,7 @@ public class CardService {
     }
 
     public CardEntity findById(PlayerEntity player, Long cardId) {
-        if(player.getCard1().getId().equals(cardId)) {
+        if (player.getCard1().getId().equals(cardId)) {
             return player.getCard1();
         } else if (player.getCard2().getId().equals(cardId)) {
             return player.getCard2();

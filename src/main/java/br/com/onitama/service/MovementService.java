@@ -26,16 +26,24 @@ public class MovementService {
     }
 
     public List<Position> getPossibleMoves(int line, int column, Long playerId, Long cardId) {
-        final PositionPart positionActual = new PositionPart(line, column);
         PlayerEntity player = playerService.findById(playerId);
+
+        PartEntity partToMove = partService.findPartAtPosition(player.getParts(), new PositionPart(line, column));
+
         CardEntity card = cardService.findById(player, cardId);
 
-        return calculatePossibleMoves(positionActual, card, player)
+        return calculatePossibleMoves(partToMove, card, player)
                 .stream().map(positionPart -> new Position(positionPart.getLine(), positionPart.getColumn()))
                 .toList();
     }
 
-    public List<PositionPart> calculatePossibleMoves(PositionPart currentPosition, CardEntity card, PlayerEntity player) {
+    public List<PositionPart> calculatePossibleMoves(PartEntity part, CardEntity card, PlayerEntity player) {
+        if (part == null) {
+            throw new UnprocessableEntityException("Peça não encontrada na posição atual.");
+        }
+
+        final PositionPart currentPosition = part.getPosition();
+
         List<PositionPart> possibleMoves = new ArrayList<>();
         int lineDirection = player.getColor() == ColorEnum.BLUE ? 1 : -1;
 
@@ -80,12 +88,12 @@ public class MovementService {
         BattleEntity battle = battleService.findByPlayerId(playerId);
         PlayerEntity player = playerService.findById(playerId);
 
-        if (!isPlayerTurn(battle, playerId)) {
-            throw new UnprocessableEntityException("Não é o seu turno.");
-        }
-
         if (!areCardsDrawn(player)) {
             throw new UnprocessableEntityException("As cartas precisam ser sorteadas antes de fazer um movimento.");
+        }
+
+        if (!isPlayerTurn(battle, playerId)) {
+            throw new UnprocessableEntityException("Não é o seu turno.");
         }
 
         CardEntity usedCard = cardService.findById(player, cardId);
@@ -93,11 +101,9 @@ public class MovementService {
         PositionPart currentPositionPart = new PositionPart(line, column);
 
         PartEntity partToMove = partService.findPartAtPosition(player.getParts(), currentPositionPart);
-        if (partToMove == null) {
-            throw new UnprocessableEntityException("Peça não encontrada na posição atual.");
-        }
 
-        List<PositionPart> possibleMoves = calculatePossibleMoves(currentPositionPart, usedCard, player);
+        List<PositionPart> possibleMoves = calculatePossibleMoves(partToMove, usedCard, player);
+
         if (!possibleMoves.contains(newPositionPart)) {
             throw new UnprocessableEntityException("Movimento inválido.");
         }
