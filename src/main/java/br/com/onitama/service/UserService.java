@@ -27,7 +27,8 @@ public class UserService {
         UserEntity newUser = new UserEntity();
         newUser.setName(user.getName());
         newUser.setUsername(user.getUsername());
-        newUser.setPassword(passwordEncoder.encode(user.getPassword())); // Criptografar a senha antes de salvar
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        newUser.setEmail(user.getEmail());
         return userRepository.save(newUser);
     }
 

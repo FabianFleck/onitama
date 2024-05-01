@@ -46,7 +46,6 @@ public class UserResource {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = tokenService.generateToken(request.getUsername());
-        return ResponseEntity.ok(new TokenResponse(jwt));
+        return ResponseEntity.ok(tokenService.generateToken(request.getUsername()));
     }
 }

@@ -1,7 +1,10 @@
 package br.com.onitama.service;
 
 import br.com.onitama.error.exception.UnauthorizedException;
+import br.com.onitama.model.entity.UserEntity;
+import br.com.onitama.model.response.TokenResponse;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,13 +22,23 @@ public class TokenService {
     @Value("${jwt.expiration}")
     private long expirationTime;  // Tempo de expiração do token em milissegundos
 
-    public String generateToken(String username) {
-        return Jwts.builder()
+    private final UserService userService;
+
+    public TokenService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public TokenResponse generateToken(String username) {
+        UserEntity user = userService.findByUsername(username);
+        String token = Jwts.builder()
                 .setSubject(username)
+                .claim("name", user.getName())
+                .claim("email", user.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
+        return new TokenResponse(extractClaim(token, Claims::getExpiration), token);
     }
 
     public String getUsernameFromToken(String token) {
