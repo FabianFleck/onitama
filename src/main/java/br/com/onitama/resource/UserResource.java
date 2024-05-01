@@ -1,19 +1,18 @@
 package br.com.onitama.resource;
 
-import br.com.onitama.model.request.UserRequest;
+import br.com.onitama.model.request.UserAuthenticationRequest;
+import br.com.onitama.model.request.UserCreateRequest;
 import br.com.onitama.model.response.TokenResponse;
 import br.com.onitama.service.TokenService;
 import br.com.onitama.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Tag(name = "User")
@@ -31,12 +30,14 @@ public class UserResource {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserRequest request) {
-        return ResponseEntity.ok(userService.registerNewUser(request));
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Void> registerUser(@RequestBody UserCreateRequest request) {
+        userService.registerNewUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody UserRequest request) {
+    public ResponseEntity<TokenResponse> authenticateUser(@RequestBody UserAuthenticationRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
@@ -45,7 +46,6 @@ public class UserResource {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = tokenService.generateToken(request.getName());
-        return ResponseEntity.ok(new TokenResponse(jwt));
+        return ResponseEntity.ok(tokenService.generateToken(request.getUsername()));
     }
 }

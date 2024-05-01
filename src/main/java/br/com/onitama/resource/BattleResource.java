@@ -6,6 +6,7 @@ import br.com.onitama.model.response.BattleSimpleResponse;
 import br.com.onitama.service.BattleService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +23,15 @@ public class BattleResource {
     }
 
     @PostMapping
-    public ResponseEntity<BattleEntity> createBattle(@RequestParam String username,
-                                                     @RequestParam ColorEnum color) {
+    public ResponseEntity<BattleEntity> createBattle(Authentication authentication, @RequestParam ColorEnum color) {
+        String username = authentication.getName();
         return ResponseEntity.ok(service.createBattle(username, color));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<BattleSimpleResponse>> findAllByUserUsername(Authentication authentication) {
+        String username = authentication.getName();
+        return ResponseEntity.ok(service.findAllByUserUsername(username));
     }
 
     @GetMapping("/{battleId}")
@@ -33,12 +40,8 @@ public class BattleResource {
     }
 
     @PostMapping("/{battleId}")
-    public ResponseEntity<BattleEntity> joinBattle(@PathVariable("battleId") String battleId, @RequestParam String username) {
+    public ResponseEntity<BattleEntity> joinBattle(Authentication authentication, @PathVariable("battleId") String battleId) {
+        String username = authentication.getName();
         return ResponseEntity.ok(service.joinBattle(battleId, username));
-    }
-
-    @GetMapping("/user/{username}")
-    public ResponseEntity<List<BattleSimpleResponse>> findAllByUserUsername(@PathVariable("username") String username) {
-        return ResponseEntity.ok(service.findAllByUserUsername(username));
     }
 }
