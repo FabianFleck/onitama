@@ -1,5 +1,6 @@
 package br.com.onitama.model.entity;
 
+import br.com.onitama.model.enumeration.BattleResultEnum;
 import br.com.onitama.model.enumeration.ColorEnum;
 
 import javax.persistence.*;
@@ -27,6 +28,10 @@ public class BattleEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "current_player")
     private ColorEnum currentPlayer;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "result")
+    private BattleResultEnum result;
 
     public String getId() {
         return id;
@@ -70,5 +75,13 @@ public class BattleEntity {
 
     public void initializeTableCard() {
         this.currentPlayer = this.tableCard.getColorEnum();
+    }
+
+    public BattleResultEnum getResult() {
+        return result;
+    }
+
+    public void setResult(BattleResultEnum result) {
+        this.result = result;
     }
 }

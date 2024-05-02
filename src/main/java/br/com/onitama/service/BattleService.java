@@ -3,6 +3,7 @@ package br.com.onitama.service;
 import br.com.onitama.error.exception.UnprocessableEntityException;
 import br.com.onitama.model.entity.BattleEntity;
 import br.com.onitama.model.entity.PlayerEntity;
+import br.com.onitama.model.enumeration.BattleResultEnum;
 import br.com.onitama.model.enumeration.ColorEnum;
 import br.com.onitama.model.response.BattleSimpleResponse;
 import br.com.onitama.repository.BattleRepository;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static br.com.onitama.model.enumeration.BattleResultEnum.OPEN;
 import static br.com.onitama.model.enumeration.ColorEnum.BLUE;
 import static br.com.onitama.model.enumeration.ColorEnum.RED;
 
@@ -37,6 +39,7 @@ public class BattleService {
             newBattle.setPlayer2(player);
         }
 
+        newBattle.setResult(OPEN);
         BattleEntity battle = repository.save(newBattle);
         player.setBattle(battle);
         playerService.save(player);
@@ -90,7 +93,13 @@ public class BattleService {
 
     public List<BattleSimpleResponse> findAllByUserUsername(String username) {
         return playerService.findByUsername(username)
-                .stream().map(player -> new BattleSimpleResponse(player.getBattle().getId()))
+                .stream().map(player -> player.getBattle())
+                .map(battle ->
+                        new BattleSimpleResponse(
+                                battle.getId(),
+                                battle.getPlayer1(),
+                                battle.getPlayer2(),
+                                battle.getResult()))
                 .toList();
     }
 
