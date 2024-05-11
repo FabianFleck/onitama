@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
@@ -20,6 +21,12 @@ public class BattleResource {
 
     public BattleResource(BattleService service) {
         this.service = service;
+    }
+
+    @GetMapping("/stream-battles")
+    public SseEmitter streamBattles(Authentication authentication) {
+        String username = authentication.getName();
+        return service.streamBattles(username);
     }
 
     @PostMapping

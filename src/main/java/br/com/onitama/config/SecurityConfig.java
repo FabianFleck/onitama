@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .headers().frameOptions().disable()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/h2-console/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                .antMatchers("/h2-console/**", "/v3/api-docs/**", "/swagger-ui/**", "/api/battle/stream-battles/**").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/user/register", "/api/user/login").permitAll()
                 .anyRequest().authenticated()

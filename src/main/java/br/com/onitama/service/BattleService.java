@@ -3,15 +3,18 @@ package br.com.onitama.service;
 import br.com.onitama.error.exception.UnprocessableEntityException;
 import br.com.onitama.model.entity.BattleEntity;
 import br.com.onitama.model.entity.PlayerEntity;
-import br.com.onitama.model.enumeration.BattleResultEnum;
 import br.com.onitama.model.enumeration.ColorEnum;
 import br.com.onitama.model.response.BattleSimpleResponse;
 import br.com.onitama.repository.BattleRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static br.com.onitama.model.enumeration.BattleResultEnum.OPEN;
 import static br.com.onitama.model.enumeration.ColorEnum.BLUE;
@@ -22,6 +25,7 @@ public class BattleService {
 
     private final PlayerService playerService;
     private final BattleRepository repository;
+    private final Map<String, SseEmitter> battleSimpleEmitters = new ConcurrentHashMap<>();
 
     public BattleService(@Lazy PlayerService playerService, BattleRepository repository) {
         this.playerService = playerService;
@@ -43,6 +47,12 @@ public class BattleService {
         BattleEntity battle = repository.save(newBattle);
         player.setBattle(battle);
         playerService.save(player);
+
+        notifyBattleUpdates(new BattleSimpleResponse(
+                battle.getId(),
+                battle.getPlayer1(),
+                battle.getPlayer2(),
+                battle.getResult()), username);
 
         return battle;
     }
@@ -74,6 +84,12 @@ public class BattleService {
         BattleEntity battleSave = repository.save(battle);
         player.setBattle(battleSave);
         playerService.save(player);
+
+        notifyBattleUpdates(new BattleSimpleResponse(
+                battle.getId(),
+                battle.getPlayer1(),
+                battle.getPlayer2(),
+                battle.getResult()), username);
 
         return battleSave;
     }
@@ -121,5 +137,52 @@ public class BattleService {
 
     public BattleEntity findByPlayerId(Long playerId) {
         return repository.findByPlayerId(playerId);
+    }
+
+    public void notifyBattleUpdates(BattleSimpleResponse updatedBattle, String username) {
+        if (updatedBattle.getPlayerOne() != null) {
+            sendBattleUpdate(updatedBattle, updatedBattle.getPlayerOne());
+        }
+
+        if (updatedBattle.getPlayerTwo() != null) {
+            sendBattleUpdate(updatedBattle, updatedBattle.getPlayerTwo());
+        }
+    }
+
+    private void sendBattleUpdate(BattleSimpleResponse battle, String playerUsername) {
+        SseEmitter emitter = this.battleSimpleEmitters.get(playerUsername);
+        if (emitter != null) {
+            try {
+                System.out.println("Enviando atualização para: " + playerUsername);
+                emitter.send(SseEmitter.event().name("message").data(battle));
+            } catch (IOException e) {
+                System.out.println("Erro ao enviar evento SSE: " + e.getMessage());
+                emitter.completeWithError(e);
+                this.battleSimpleEmitters.remove(playerUsername);
+            }
+        } else {
+            System.out.println("Nenhum emitter encontrado para: " + playerUsername);
+        }
+    }
+
+    public SseEmitter streamBattles(String username) {
+        final Long TIMEOUT = 180_000L; // Timeout de 3 minutos, ajuste conforme necessário
+        SseEmitter emitter = new SseEmitter(TIMEOUT);
+        System.out.println("Estabelecendo conexão para o username: " + username);
+
+        battleSimpleEmitters.put(username, emitter);
+
+        emitter.onCompletion(() -> {
+            battleSimpleEmitters.remove(username);
+            System.out.println("Conexão SSE completada para: " + username);
+        });
+
+        emitter.onTimeout(() -> {
+            emitter.complete();
+            battleSimpleEmitters.remove(username);
+            System.out.println("Conexão SSE com timeout para: " + username);
+        });
+
+        return emitter;
     }
 }
