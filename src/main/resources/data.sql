@@ -62,42 +62,42 @@ INSERT INTO positions (line, column, card_id) VALUES
 (0, 1, 8),   -- Move uma casa para a direita na mesma linha
 
 -- Frog: Recua diretamente para baixo; avança diagonalmente para um lado e recua para o outro
-(-1, -1, 9), -- Recua uma casa para baixo e uma para a esquerda
-(1, 1, 9),   -- Avança uma casa para cima e uma para a direita
-(-1, 1, 9),  -- Recua uma casa para baixo e uma para a direita
+(1, -1, 9), -- Recua uma casa para baixo e uma para a esquerda
+(-1, 1, 9),   -- Avança uma casa para cima e uma para a direita
+(1, 1, 9),  -- Recua uma casa para baixo e uma para a direita
 
 -- Goose: Avança ou recua diagonalmente para um lado; move para o outro lado na mesma linha
-(1, -1, 10), -- Avança uma casa para cima e uma para a esquerda
+(-1, -1, 10), -- Avança uma casa para cima e uma para a esquerda
 (0, -1, 10), -- Move uma casa para a esquerda na mesma linha
-(-1, 1, 10), -- Recua uma casa para baixo e uma para a direita
+(1, 1, 10), -- Recua uma casa para baixo e uma para a direita
 (0, 1, 10),  -- Move uma casa para a direita na mesma linha
 
 -- Horse: Avança diretamente para cima; move lateralmente para a esquerda
-(1, 0, 11),  -- Avança uma casa para cima
+(-1, 0, 11),  -- Avança uma casa para cima
 (0, -1, 11), -- Move uma casa para a esquerda na mesma linha
 
 -- Rabbit: Avança diagonalmente para um lado; recua diagonalmente para o outro lado; move lateralmente para a direita
-(1, 1, 12),  -- Avança uma casa para cima e uma para a direita
-(-1, -1, 12),-- Recua uma casa para baixo e uma para a esquerda
+(-1, 1, 12),  -- Avança uma casa para cima e uma para a direita
+(1, -1, 12),-- Recua uma casa para baixo e uma para a esquerda
 (0, 2, 12),  -- Move duas casas para a direita na mesma linha
 
 -- Rooster: Avança ou recua para um lado; move para o outro lado na mesma linha
-(1, -1, 13), -- Avança uma casa para cima e uma para a esquerda
-(-1, -1, 13),-- Recua uma casa para baixo e uma para a esquerda
+(-1, -1, 13), -- Avança uma casa para cima e uma para a esquerda
+(1, -1, 13),-- Recua uma casa para baixo e uma para a esquerda
 (1, 1, 13),  -- Avança uma casa para cima e uma para a direita
 (-1, 1, 13), -- Recua uma casa para baixo e uma para a direita
 
 -- Eel: Avança ou recua diagonalmente para um lado; move lateralmente para a direita
-(1, -1, 14), -- Avança uma casa para cima e uma para a esquerda
-(-1, -1, 14),-- Recua uma casa para baixo e uma para a esquerda
+(-1, -1, 14), -- Avança uma casa para cima e uma para a esquerda
+(1, -1, 14),-- Recua uma casa para baixo e uma para a esquerda
 (0, 1, 14),  -- Move uma casa para a direita na mesma linha
 
 -- Cobra: Avança ou recua diagonalmente para um lado; move lateralmente para a esquerda
-(1, 1, 15),  -- Avança uma casa para cima e uma para a direita
-(-1, 1, 15), -- Recua uma casa para baixo e uma para a direita
+(-1, 1, 15),  -- Avança uma casa para cima e uma para a direita
+(1, 1, 15), -- Recua uma casa para baixo e uma para a direita
 (0, -1, 15), -- Move uma casa para a esquerda na mesma linha
 
 -- Ox: Avança diretamente para cima; move lateralmente para a direita
-(1, 0, 16),  -- Avança uma casa para cima
-(-1, 0, 16), -- Recua uma casa para baixo
+(-1, 0, 16),  -- Avança uma casa para cima
+(1, 0, 16), -- Recua uma casa para baixo
 (0, 1, 16);  -- Move uma casa para a direita na mesma linha
