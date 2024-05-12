@@ -1,21 +1,21 @@
-package br.com.onitama.model;
+package br.com.onitama.model.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
 
 @Schema(description = "Objeto de posição")
-public class Position {
+public class PositionResponse {
     @Schema(description = "Linha da posição", example = "5")
     private int line;
 
     @Schema(description = "Coluna da posição", example = "3")
     private int column;
 
-    public Position() {
+    public PositionResponse() {
     }
 
-    public Position(int line, int column) {
+    public PositionResponse(int line, int column) {
         this.line = line;
         this.column = column;
     }
@@ -40,8 +40,8 @@ public class Position {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Position position = (Position) o;
-        return line == position.line && column == position.column;
+        PositionResponse positionResponse = (PositionResponse) o;
+        return line == positionResponse.line && column == positionResponse.column;
     }
 
     @Override

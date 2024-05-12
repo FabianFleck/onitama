@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS part (
     player_id BIGINT,
     line INT,
     column INT,
-    part_type_enum ENUM('MASTER', 'DISCIPLE'),
+    type ENUM('MASTER', 'DISCIPLE'),
     FOREIGN KEY (player_id) REFERENCES player(id)
 );
 

@@ -1,6 +1,6 @@
 package br.com.onitama.resource;
 
-import br.com.onitama.model.Position;
+import br.com.onitama.model.response.PositionResponse;
 import br.com.onitama.model.entity.PositionPart;
 import br.com.onitama.service.CardService;
 import br.com.onitama.service.MovementService;
@@ -41,11 +41,11 @@ public class MovementResource {
     }
 
     @GetMapping("/possible")
-    public ResponseEntity<List<Position>> getPossibleMoves(Authentication authentication,
-                                                           @RequestParam int line,
-                                                           @RequestParam int column,
-                                                           @RequestParam Long playerId,
-                                                           @RequestParam Long cardId) {
+    public ResponseEntity<List<PositionResponse>> getPossibleMoves(Authentication authentication,
+                                                                   @RequestParam int line,
+                                                                   @RequestParam int column,
+                                                                   @RequestParam Long playerId,
+                                                                   @RequestParam Long cardId) {
         String username = authentication.getName();
         return ResponseEntity.ok(service.getPossibleMoves(username, new PositionPart(line, column), playerId, cardId));
     }

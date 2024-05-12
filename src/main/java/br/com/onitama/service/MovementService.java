@@ -1,7 +1,7 @@
 package br.com.onitama.service;
 
 import br.com.onitama.error.exception.UnprocessableEntityException;
-import br.com.onitama.model.Position;
+import br.com.onitama.model.response.PositionResponse;
 import br.com.onitama.model.entity.*;
 import br.com.onitama.model.enumeration.ColorEnum;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class MovementService {
         this.tokenService = tokenService;
     }
 
-    public List<Position> getPossibleMoves(String username, PositionPart position, Long playerId, Long cardId) {
+    public List<PositionResponse> getPossibleMoves(String username, PositionPart position, Long playerId, Long cardId) {
         PlayerEntity player = playerService.findById(playerId);
         tokenService.isAuthorization(player.getUser().getUsername(), username);
 
@@ -36,7 +36,7 @@ public class MovementService {
         CardEntity card = cardService.findById(player, cardId);
 
         return calculatePossibleMoves(partToMove, card, player)
-                .stream().map(positionPart -> new Position(positionPart.getLine(), positionPart.getColumn()))
+                .stream().map(positionPart -> new PositionResponse(positionPart.getLine(), positionPart.getColumn()))
                 .toList();
     }
 

@@ -21,7 +21,7 @@ public class PartEntity {
     private PositionPart position;
 
     @Enumerated(EnumType.STRING)
-    private PartTypeEnum partTypeEnum;
+    private PartTypeEnum type;
 
     public Long getId() {
         return id;
@@ -47,11 +47,11 @@ public class PartEntity {
         this.position = position;
     }
 
-    public PartTypeEnum getPartTypeEnum() {
-        return partTypeEnum;
+    public PartTypeEnum getType() {
+        return type;
     }
 
-    public void setPartTypeEnum(PartTypeEnum partTypeEnum) {
-        this.partTypeEnum = partTypeEnum;
+    public void setType(PartTypeEnum type) {
+        this.type = type;
     }
 }

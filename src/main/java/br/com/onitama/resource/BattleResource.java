@@ -1,7 +1,9 @@
 package br.com.onitama.resource;
 
+import br.com.onitama.mapper.BattleMapper;
 import br.com.onitama.model.entity.BattleEntity;
 import br.com.onitama.model.enumeration.ColorEnum;
+import br.com.onitama.model.response.BattleResponse;
 import br.com.onitama.model.response.BattleSimpleResponse;
 import br.com.onitama.service.BattleService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,9 +20,11 @@ import java.util.List;
 public class BattleResource {
 
     private final BattleService service;
+    private final BattleMapper mapper;
 
-    public BattleResource(BattleService service) {
+    public BattleResource(BattleService service, BattleMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
     @GetMapping("/stream-battles")
@@ -42,8 +46,8 @@ public class BattleResource {
     }
 
     @GetMapping("/{battleId}")
-    public ResponseEntity<BattleEntity> findById(@PathVariable("battleId") String battleId) {
-        return ResponseEntity.ok(service.findById(battleId));
+    public ResponseEntity<BattleResponse> findById(@PathVariable("battleId") String battleId) {
+        return ResponseEntity.ok(mapper.toBattleResponse(service.findById(battleId)));
     }
 
     @PostMapping("/{battleId}")

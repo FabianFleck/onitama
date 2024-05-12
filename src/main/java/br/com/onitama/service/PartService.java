@@ -44,10 +44,10 @@ public class PartService {
             PartEntity part = new PartEntity();
             part.setPlayer(player);
             part.setPosition(new PositionPart(startLine, column));
-            part.setPartTypeEnum(DISCIPLE);
+            part.setType(DISCIPLE);
             parts.add(part);
         }
-        parts.get(2).setPartTypeEnum(PartTypeEnum.MASTER);
+        parts.get(2).setType(PartTypeEnum.MASTER);
         return parts;
     }
 
