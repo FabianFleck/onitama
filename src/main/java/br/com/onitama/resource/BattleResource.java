@@ -27,14 +27,21 @@ public class BattleResource {
         this.mapper = mapper;
     }
 
-    @GetMapping("/stream-battles")
+
+    @GetMapping("/stream")
     public SseEmitter streamBattles(Authentication authentication) {
         String username = authentication.getName();
         return service.streamBattles(username);
     }
 
+    @GetMapping("/stream/list")
+    public SseEmitter streamListBattles(Authentication authentication) {
+        String username = authentication.getName();
+        return service.streamListBattles(username);
+    }
+
     @PostMapping
-    public ResponseEntity<BattleEntity> createBattle(Authentication authentication, @RequestParam ColorEnum color) {
+    public ResponseEntity<BattleResponse> createBattle(Authentication authentication, @RequestParam ColorEnum color) {
         String username = authentication.getName();
         return ResponseEntity.ok(service.createBattle(username, color));
     }
@@ -51,7 +58,7 @@ public class BattleResource {
     }
 
     @PostMapping("/{battleId}")
-    public ResponseEntity<BattleEntity> joinBattle(Authentication authentication, @PathVariable("battleId") String battleId) {
+    public ResponseEntity<BattleResponse> joinBattle(Authentication authentication, @PathVariable("battleId") String battleId) {
         String username = authentication.getName();
         return ResponseEntity.ok(service.joinBattle(battleId, username));
     }

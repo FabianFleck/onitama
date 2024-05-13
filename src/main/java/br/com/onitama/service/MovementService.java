@@ -1,6 +1,7 @@
 package br.com.onitama.service;
 
 import br.com.onitama.error.exception.UnprocessableEntityException;
+import br.com.onitama.model.response.BattleResponse;
 import br.com.onitama.model.response.PositionResponse;
 import br.com.onitama.model.entity.*;
 import br.com.onitama.model.enumeration.ColorEnum;
@@ -118,7 +119,9 @@ public class MovementService {
 
         cardService.swapCardsWithTable(player, usedCard);
 
-        battleService.nextPlayer(player.getBattle().getId());
+        BattleResponse battleResponse = battleService.nextPlayer(player.getBattle().getId());
+
+        battleService.notifyBattleUpdates(battleResponse);
 
         return partToMove.getPosition();
     }

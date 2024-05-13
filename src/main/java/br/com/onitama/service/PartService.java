@@ -35,6 +35,7 @@ public class PartService {
         // Se a peça existir, deletá-la
         if (opponentPart != null) {
             repository.delete(opponentPart);
+            repository.flush();
         }
     }
 

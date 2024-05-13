@@ -1,9 +1,11 @@
 package br.com.onitama.service;
 
 import br.com.onitama.error.exception.UnprocessableEntityException;
+import br.com.onitama.mapper.BattleMapper;
 import br.com.onitama.model.entity.BattleEntity;
 import br.com.onitama.model.entity.CardEntity;
 import br.com.onitama.model.entity.PlayerEntity;
+import br.com.onitama.model.response.BattleResponse;
 import br.com.onitama.repository.CardRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +18,13 @@ public class CardService {
     private final CardRepository repository;
     private final BattleService battleService;
     private final PlayerService playerService;
+    private final BattleMapper mapper;
 
-    public CardService(CardRepository repository, BattleService battleService, PlayerService playerService) {
+    public CardService(CardRepository repository, BattleService battleService, PlayerService playerService, BattleMapper mapper) {
         this.repository = repository;
         this.battleService = battleService;
         this.playerService = playerService;
+        this.mapper = mapper;
     }
 
     public List<CardEntity> getAllCards() {
@@ -38,7 +42,7 @@ public class CardService {
         }
     }
 
-    public BattleEntity distributeCards(String battleId) {
+    public BattleResponse distributeCards(String battleId) {
         BattleEntity battle = battleService.findById(battleId);
         registeredPlayers(battle);
         distributeCards(battle);
@@ -54,7 +58,13 @@ public class CardService {
 
         battle.initializeTableCard();
 
-        return battleService.save(battle);
+        BattleEntity battleSave = battleService.save(battle);
+
+        BattleResponse battleResponse = mapper.toBattleResponse(battleSave);
+
+        battleService.notifyBattleUpdates(battleResponse);
+
+        return battleResponse;
     }
 
     private void distributeCards(BattleEntity battle) {

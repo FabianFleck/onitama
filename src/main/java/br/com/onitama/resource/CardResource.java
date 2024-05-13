@@ -1,7 +1,7 @@
 package br.com.onitama.resource;
 
-import br.com.onitama.model.entity.BattleEntity;
 import br.com.onitama.model.entity.CardEntity;
+import br.com.onitama.model.response.BattleResponse;
 import br.com.onitama.service.CardService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +31,7 @@ public class CardResource {
     }
 
     @PostMapping("/distribute")
-    public ResponseEntity<BattleEntity> distributeCards(@RequestParam String battleId) {
+    public ResponseEntity<BattleResponse> distributeCards(@RequestParam String battleId) {
         return ResponseEntity.ok(service.distributeCards(battleId));
     }
 }
