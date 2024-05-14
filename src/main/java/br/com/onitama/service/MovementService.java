@@ -54,10 +54,11 @@ public class MovementService {
 
         List<PositionPart> possibleMoves = new ArrayList<>();
         int lineDirection = player.getColor() == ColorEnum.BLUE ? 1 : -1;
+        int columnDirection = player.getColor() == RED ? 1 : -1;
 
         for (PositionEntity move : card.getPositions()) {
             int newLine = currentPosition.getLine() + (move.getLine() * lineDirection);
-            int newColumn = currentPosition.getColumn() + move.getColumn();
+            int newColumn = currentPosition.getColumn() + (move.getColumn() * columnDirection);
 
             if (isValidPosition(newLine, newColumn) && !isPositionOccupied(newLine, newColumn, player.getParts())) {
                 possibleMoves.add(new PositionPart(newLine, newColumn));

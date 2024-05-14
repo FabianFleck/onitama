@@ -17,89 +17,102 @@ INSERT INTO cards (name, color_enum) VALUES
 ('Cobra', 'BLUE'),
 ('Ox', 'RED');
 
--- Inserir movimentos considerando que avançar é mover-se para cima
+-- Elephant
 INSERT INTO positions (line, column, card_id) VALUES
--- Elephant: Move uma casa para cima e para os lados; move para os lados na mesma linha
-(-1, 1, 1),  -- Avança uma casa para cima e uma para a direita
-(-1, -1, 1), -- Avança uma casa para cima e uma para a esquerda
-(0, 1, 1),   -- Move uma casa para a direita na mesma linha
-(0, -1, 1),  -- Move uma casa para a esquerda na mesma linha
+(-1, 1, 1),
+(-1, -1, 1),
+(0, 1, 1),
+(0, -1, 1);
 
--- Tiger: Avança duas casas para cima; recua uma casa para baixo
-(-2, 0, 2),  -- Avança duas casas para cima
-(1, 0, 2),   -- Recua uma casa para baixo
+-- Tiger
+INSERT INTO positions (line, column, card_id) VALUES
+(-2, 0, 2),
+(1, 0, 2);
 
--- Crab: Move lateralmente na mesma linha; avança uma casa para cima
-(0, -2, 3),  -- Move duas casas para a esquerda na mesma linha
-(0, 2, 3),   -- Move duas casas para a direita na mesma linha
-(-1, 0, 3),   -- Avança uma casa para cima
+-- Crab
+INSERT INTO positions (line, column, card_id) VALUES
+(0, -2, 3),
+(0, 2, 3),
+(-1, 0, 3);
 
--- Dragon: Avança uma casa para cima e move-se duas casas lateralmente; recua uma casa para baixo e move-se uma lateralmente
-(-1, -2, 4), -- Avança uma casa para cima e move-se duas para a esquerda
-(-1, 2, 4),  -- Avança uma casa para cima e move-se duas para a direita
-(1, -1, 4),  -- Recua uma casa para baixo e move-se uma para a esquerda
-(1, 1, 4),   -- Recua uma casa para baixo e move-se uma para a direita
+-- Dragon
+INSERT INTO positions (line, column, card_id) VALUES
+(-1, -2, 4),
+(-1, 2, 4),
+(1, -1, 4),
+(1, 1, 4);
 
--- Monkey: Avança ou recua diagonalmente
-(-1, -1, 5), -- Avança uma casa para cima e uma para a esquerda
-(-1, 1, 5),  -- Avança uma casa para cima e uma para a direita
-(1, -1, 5),  -- Recua uma casa para baixo e uma para a esquerda
-(1, 1, 5),   -- Recua uma casa para baixo e uma para a direita
+-- Monkey
+INSERT INTO positions (line, column, card_id) VALUES
+(1, -1, 5),
+(1, 1, 5),
+(-1, -1, 5),
+(-1, 1, 5);
 
--- Mantis: Avança diagonalmente para os lados; recua diretamente para baixo
-(-1, -1, 6), -- Avança uma casa para cima e uma para a esquerda
-(-1, 1, 6),  -- Avança uma casa para cima e uma para a direita
-(1, 0, 6),   -- Recua uma casa para baixo
+-- Mantis
+INSERT INTO positions (line, column, card_id) VALUES
+(-1, -1, 6),
+(-1, 1, 6),
+(1, 0, 6);
 
--- Crane: Avança diretamente para cima; recua diagonalmente para os lados
-(-1, 0, 7),  -- Avança uma casa para cima
-(1, -1, 7),  -- Recua uma casa para baixo e uma para a esquerda
-(1, 1, 7),   -- Recua uma casa para baixo e uma para a direita
+-- Crane
+INSERT INTO positions (line, column, card_id) VALUES
+(-1, 0, 7),
+(1, -1, 7),
+(1, 1, 7);
 
--- Boar: Avança diretamente para cima; move para os lados na mesma linha
-(-1, 0, 8),  -- Avança uma casa para cima
-(0, -1, 8),  -- Move uma casa para a esquerda na mesma linha
-(0, 1, 8),   -- Move uma casa para a direita na mesma linha
+-- Boar
+INSERT INTO positions (line, column, card_id) VALUES
+(-1, 0, 8),
+(0, -1, 8),
+(0, 1, 8);
 
--- Frog: Recua diretamente para baixo; avança diagonalmente para um lado e recua para o outro
-(1, -1, 9), -- Recua uma casa para baixo e uma para a esquerda
-(0, -2, 9),   -- Move duas casa para a esquerda na mesma linha
-(1, 1, 9),  -- Recua uma casa para baixo e uma para a direita
+-- Frog
+INSERT INTO positions (line, column, card_id) VALUES
+(-1, -1, 9),
+(0, -2, 9),
+(1, 1, 9);
 
--- Goose: Avança ou recua diagonalmente para um lado; move para o outro lado na mesma linha
-(-1, -1, 10), -- Avança uma casa para cima e uma para a esquerda
-(0, -1, 10), -- Move uma casa para a esquerda na mesma linha
-(1, 1, 10), -- Recua uma casa para baixo e uma para a direita
-(0, 1, 10),  -- Move uma casa para a direita na mesma linha
+-- Goose
+INSERT INTO positions (line, column, card_id) VALUES
+(-1, -1, 10),
+(0, -1, 10),
+(1, 1, 10),
+(0, 1, 10);
 
--- Horse: Avança diretamente para cima; move lateralmente para a esquerda
-(-1, 0, 11),  -- Avança uma casa para cima
-(0, -1, 11), -- Move uma casa para a esquerda na mesma linha
-(1, 0, 11),  -- Recua uma casa para baixo
+-- Horse
+INSERT INTO positions (line, column, card_id) VALUES
+(-1, 0, 11),
+(0, -1, 11),
+(1, 0, 11);
 
+-- Rabbit
+INSERT INTO positions (line, column, card_id) VALUES
+(-1, 1, 12),
+(1, -1, 12),
+(0, 2, 12);
 
--- Rabbit: Avança diagonalmente para um lado; recua diagonalmente para o outro lado; move lateralmente para a direita
-(-1, 1, 12),  -- Avança uma casa para cima e uma para a direita
-(1, -1, 12),-- Recua uma casa para baixo e uma para a esquerda
-(0, 2, 12),  -- Move duas casas para a direita na mesma linha
+-- Rooster
+INSERT INTO positions (line, column, card_id) VALUES
+(-1, 1, 13),
+(1, -1, 13),
+(0, 1, 13),
+(0, -1, 13);
 
--- Rooster: Avança ou recua para um lado; move para o outro lado na mesma linha
-(-1, 1, 13), -- Avança uma casa para cima e uma para a direita
-(1, -1, 13),-- Recua uma casa para baixo e uma para a esquerda
-(0, 1, 13),  -- Move uma casa para a direita  na mesma linha
-(0, -1, 13), -- Move uma casa para a esquerda na mesma linha
+-- Eel
+INSERT INTO positions (line, column, card_id) VALUES
+(-1, -1, 14),
+(1, -1, 14),
+(0, 1, 14);
 
--- Eel: Avança ou recua diagonalmente para um lado; move lateralmente para a direita
-(-1, -1, 14), -- Avança uma casa para cima e uma para a esquerda
-(1, -1, 14),-- Recua uma casa para baixo e uma para a esquerda
-(0, 1, 14),  -- Move uma casa para a direita na mesma linha
+-- Cobra
+INSERT INTO positions (line, column, card_id) VALUES
+(-1, 1, 15),
+(1, 1, 15),
+(0, -1, 15);
 
--- Cobra: Avança ou recua diagonalmente para um lado; move lateralmente para a esquerda
-(-1, 1, 15),  -- Avança uma casa para cima e uma para a direita
-(1, 1, 15), -- Recua uma casa para baixo e uma para a direita
-(0, -1, 15), -- Move uma casa para a esquerda na mesma linha
-
--- Ox: Avança diretamente para cima; move lateralmente para a direita
-(-1, 0, 16),  -- Avança uma casa para cima
-(1, 0, 16), -- Recua uma casa para baixo
-(0, 1, 16);  -- Move uma casa para a direita na mesma linha
+-- Ox
+INSERT INTO positions (line, column, card_id) VALUES
+(-1, 0, 16),
+(1, 0, 16),
+(0, 1, 16);
