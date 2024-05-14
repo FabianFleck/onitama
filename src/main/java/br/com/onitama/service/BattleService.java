@@ -4,6 +4,7 @@ import br.com.onitama.error.exception.UnprocessableEntityException;
 import br.com.onitama.mapper.BattleMapper;
 import br.com.onitama.model.entity.BattleEntity;
 import br.com.onitama.model.entity.PlayerEntity;
+import br.com.onitama.model.enumeration.BattleResultEnum;
 import br.com.onitama.model.enumeration.ColorEnum;
 import br.com.onitama.model.response.BattleResponse;
 import br.com.onitama.model.response.BattleSimpleResponse;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static br.com.onitama.model.enumeration.BattleResultEnum.OPEN;
@@ -255,5 +257,11 @@ public class BattleService {
         }
 
         return emitter;
+    }
+
+    public BattleResponse updateResult(String id, BattleResultEnum result) {
+        BattleEntity entity = findById(id);
+        entity.setResult(result);
+        return mapper.toBattleResponse(repository.save(entity));
     }
 }

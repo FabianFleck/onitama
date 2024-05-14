@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static br.com.onitama.model.enumeration.PartTypeEnum.DISCIPLE;
+import static br.com.onitama.model.enumeration.PartTypeEnum.MASTER;
 
 @Service
 public class PartService {
@@ -25,7 +26,7 @@ public class PartService {
     }
 
     @Transactional
-    public void captureOpponentPartAtPosition(PlayerEntity player, PositionPart newPosition) {
+    public boolean captureOpponentPartAtPosition(PlayerEntity player, PositionPart newPosition) {
         // Encontrar o oponente
         PlayerEntity opponent = playerService.findOpponent(player);
 
@@ -36,7 +37,9 @@ public class PartService {
         if (opponentPart != null) {
             repository.delete(opponentPart);
             repository.flush();
+            return opponentPart.getType().equals(MASTER);
         }
+        return false;
     }
 
     public List<PartEntity> initializePartsForPlayer(PlayerEntity player, int startLine) {
@@ -48,7 +51,7 @@ public class PartService {
             part.setType(DISCIPLE);
             parts.add(part);
         }
-        parts.get(2).setType(PartTypeEnum.MASTER);
+        parts.get(2).setType(MASTER);
         return parts;
     }
 

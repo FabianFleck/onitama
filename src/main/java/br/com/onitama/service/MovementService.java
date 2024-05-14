@@ -1,6 +1,7 @@
 package br.com.onitama.service;
 
 import br.com.onitama.error.exception.UnprocessableEntityException;
+import br.com.onitama.model.enumeration.BattleResultEnum;
 import br.com.onitama.model.response.BattleResponse;
 import br.com.onitama.model.response.PositionResponse;
 import br.com.onitama.model.entity.*;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.onitama.model.enumeration.ColorEnum.BLUE;
+import static br.com.onitama.model.enumeration.ColorEnum.RED;
 
 @Service
 public class MovementService {
@@ -94,40 +98,53 @@ public class MovementService {
 
         BattleEntity battle = battleService.findByPlayerId(playerId);
 
-        if (!areCardsDrawn(player)) {
-            throw new UnprocessableEntityException("As cartas precisam ser sorteadas antes de fazer um movimento.");
+        if (battle.getResult() == BattleResultEnum.OPEN) {
+            if (!areCardsDrawn(player)) {
+                throw new UnprocessableEntityException("As cartas precisam ser sorteadas antes de fazer um movimento.");
+            }
+
+            if (!isPlayerTurn(battle, playerId)) {
+                throw new UnprocessableEntityException("Não é o seu turno.");
+            }
+
+            CardEntity usedCard = cardService.findById(player, cardId);
+
+            PartEntity partToMove = partService.findPartAtPosition(player.getParts(), currentPositionPart);
+
+            List<PositionPart> possibleMoves = calculatePossibleMoves(partToMove, usedCard, player);
+
+            if (!possibleMoves.contains(newPositionPart)) {
+                throw new UnprocessableEntityException("Movimento inválido.");
+            }
+
+            partToMove.setPosition(newPositionPart);
+            PartEntity part = partService.save(partToMove);
+
+            boolean masterCaptured = partService.captureOpponentPartAtPosition(player, part.getPosition());
+
+            cardService.swapCardsWithTable(player, usedCard);
+
+            BattleResponse battleResponse = battleService.nextPlayer(player.getBattle().getId());
+
+            if (masterCaptured || partTemplePosition(part, player.getColor())) {
+                battleResponse = battleService.updateResult(battleResponse.getId(), player.getColor() == RED ? BattleResultEnum.RED : BattleResultEnum.BLUE);
+            }
+
+            battleService.notifyBattleUpdates(battleResponse);
+
+            return partToMove.getPosition();
         }
+        throw new UnprocessableEntityException("Jogo finalizado. " + player.getUser().getUsername() + " venceu!");
+    }
 
-        if (!isPlayerTurn(battle, playerId)) {
-            throw new UnprocessableEntityException("Não é o seu turno.");
-        }
-
-        CardEntity usedCard = cardService.findById(player, cardId);
-
-        PartEntity partToMove = partService.findPartAtPosition(player.getParts(), currentPositionPart);
-
-        List<PositionPart> possibleMoves = calculatePossibleMoves(partToMove, usedCard, player);
-
-        if (!possibleMoves.contains(newPositionPart)) {
-            throw new UnprocessableEntityException("Movimento inválido.");
-        }
-
-        partToMove.setPosition(newPositionPart);
-        PartEntity part = partService.save(partToMove);
-
-        partService.captureOpponentPartAtPosition(player, part.getPosition());
-
-        cardService.swapCardsWithTable(player, usedCard);
-
-        BattleResponse battleResponse = battleService.nextPlayer(player.getBattle().getId());
-
-        battleService.notifyBattleUpdates(battleResponse);
-
-        return partToMove.getPosition();
+    private boolean partTemplePosition(PartEntity part, ColorEnum color) {
+        int line = RED == color ? 5 : 1;
+        int column = 3;
+        return part.getPosition().getLine() == line && part.getPosition().getColumn() == column;
     }
 
     private boolean isPlayerTurn(BattleEntity battle, Long playerId) {
-        PlayerEntity currentPlayer = battle.getCurrentPlayer() == ColorEnum.RED ? battle.getPlayer1() : battle.getPlayer2();
+        PlayerEntity currentPlayer = battle.getCurrentPlayer() == RED ? battle.getPlayer1() : battle.getPlayer2();
         return currentPlayer != null && currentPlayer.getId().equals(playerId);
     }
 }
