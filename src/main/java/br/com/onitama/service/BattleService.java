@@ -185,7 +185,9 @@ public class BattleService {
     public SseEmitter streamListBattles(String username) {
         final Long TIMEOUT = 180_000L; // Timeout de 3 minutos, ajuste conforme necessário
         SseEmitter emitter = new SseEmitter(TIMEOUT);
-        System.out.println("Estabelecendo conexão para o username: " + username);
+        try {
+            emitter.send(SseEmitter.event().name("retry").data(5000)); // Configura reconexão automática para cada 5 segundos
+            System.out.println("Estabelecendo conexão de lista para o username: " + username);
 
         battleSimpleEmitters.put(username, emitter);
 
@@ -199,6 +201,9 @@ public class BattleService {
             battleSimpleEmitters.remove(username);
             System.out.println("Conexão SSE com timeout para: " + username);
         });
+        } catch (IOException e) {
+            emitter.completeWithError(e);
+        }
 
         return emitter;
     }
@@ -233,7 +238,7 @@ public class BattleService {
     public SseEmitter streamBattles(String username) {
         final Long TIMEOUT = 1800000L; // Timeout de 30 minutos
         SseEmitter emitter = new SseEmitter(TIMEOUT);
-        System.out.println("Emitters: " + emitter);
+        System.out.println("Emitters: " + battleEmitters);
         try {
             emitter.send(SseEmitter.event().name("retry").data(5000)); // Configura reconexão automática para cada 5 segundos
             System.out.println("Estabelecendo conexão de batalha para o username: " + username);
